@@ -1,0 +1,42 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+build/
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+dev/
+ignore.ts
+
+dist
+.rollup.cache
+
+# Pre build generation.
+src/generated-config.ts
+
+localhost.pem
+localhost-key.pem
+
+# Playwright
+test-results/
+playwright-report/
+e2e/.playwright-user-data/
+e2e/screenshots/
+e2e/videos/

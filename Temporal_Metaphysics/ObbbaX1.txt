@@ -1,0 +1,8 @@
+# Command to create the OBBBA Token on X1 Testnet
+x1-spl-token create-token \
+    --program-id StablecoinTokenProgram \
+    --token-type RegulatedFiatBacked \
+    --metadata-json ./obba_token_metadata.json \
+    --mint-authority ~/.config/x1/us-treasury-testnet-authority.json \
+    --decimals 6 \
+    --fee-payer ~/.config/x1/genesis-authority.json

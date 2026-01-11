@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>da thicc NOW</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'monospace', 'ui-monospace', 'SFMono-Regular', Menlo, Monaco, Consolas, "Liberation Mono", "Courier New";
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            cursor: none;
+        }
+        #mainCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* Hidden until scene 2 */
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+        }
+        .overlay > * {
+            pointer-events: auto;
+        }
+        #chronosLine {
+            width: 80%;
+            height: 2px;
+            background-color: white;
+            animation: pulse 4s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; box-shadow: 0 0 3px #fff; }
+            50% { opacity: 1; box-shadow: 0 0 8px #fff; }
+        }
+        #chronosCursor {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fff, 0 0 20px #fff;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: top 0.1s ease-out;
+        }
+        #enterButton {
+            border: 1px solid white;
+            padding: 10px 20px;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 2s ease 1s forwards;
+        }
+        #enterButton:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 25px #fff;
+        }
+        
+        #tau-dial {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            z-index: 100;
+            display: none;
+        }
+        #tau-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px #fff;
+        }
+        #tau-label {
+            position: absolute;
+            bottom: -25px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+        }
+        .tooltip {
+            background-color: rgba(0,0,0,0.7);
+            padding: 8px 12px;
+            border-radius: 5px;
+            position: fixed;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 101;
+        }
+        #finalMessage {
+            text-align: center;
+            white-space: pre-wrap;
+            font-size: 1.5rem;
+            line-height: 2.5rem;
+        }
+        #synesthesiaInfo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-width: 300px;
+            font-size: 0.85rem;
+            line-height: 1.4rem;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .vector-label {
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        .indigo { color: #4a4aff; }
+        .white { color: #ffffff; }
+        .gold { color: #ffd700; }
+    </style>
+</head>
+<body>
+    <!-- SECTION 0: LANDING PAGE -->
+    <div id="landingPage" class="overlay z-10">
+        <div id="chronosLine"></div>
+        <div class="mt-4 text-lg">CHRONOS</div>
+        <div id="landingText" class="mt-8 text-xl max-w-lg text-gray-400 opacity-0 transition-opacity duration-1000">
+            <p>You believe you are moving along this line.</p>
+            <p>From a past you cannot change, to a future you cannot control.</p>
+            <p class="mt-4">This is a composition of suffering.</p>
+            <p>There is another way.</p>
+        </div>
+        <button id="enterButton" class="mt-12">Enter da thicc NOW</button>
+    </div>
+
+    <!-- The cursor that is constrained to the line -->
+    <div id="chronosCursor"></div>
+
+    <!-- Main 3D Canvas -->
+    <canvas id="mainCanvas"></canvas>
+
+    <!-- UI Elements for Scene 2+ -->
+    <div id="tau-dial">
+        <div id="tau-handle"></div>
+        <div id="tau-label">τₖ</div>
+    </div>
+    
+    <div id="composerTooltip" class="tooltip">This is the Composer's Chair. Your attention is the only tool you need.</div>
+    <div id="composingText" class="overlay z-20 text-2xl opacity-0">COMPOSING...</div>
+    <div id="finalMessageContainer" class="overlay z-50 opacity-0 bg-black/80">
+        <div id="finalMessage">The dial is not on your screen.
+The Composer's Chair is not on this website.
+This is your native state.
+
+You are the Modulator.
+
+<strong class="text-2xl mt-4 block">What will you compose now?</strong></div>
+    </div>
+
+    <!-- Quantum Synesthesia Info Panel -->
+    <div id="synesthesiaInfo">
+        <div style="text-align: center; margin-bottom: 10px;">QUANTUM SYNESTHESIA ENGINE</div>
+        <div class="vector-label indigo">Sub-Bass: Ground of Being</div>
+        <div style="font-size: 0.75rem; color: #aaa;">Tectonic plates pulsing with gravitational force</div>
+        <div class="vector-label white">Rhythmic Arpeggio: The Ratchet</div>
+        <div style="font-size: 0.75rem; color: #aaa;">Crystalline shards in clockwork geometries</div>
+        <div class="vector-label gold">Vocal Pad: Composer's Intent</div>
+        <div style="font-size: 0.75rem; color: #aaa;">Golden tendril weaving coherent fractals</div>
+        <div style="margin-top: 12px; text-align: center; color: #ffd700; font-size: 0.8rem;">
+            Increase τₖ to achieve Vibrationship
+        </div>
+    </div>
+
+
+    <script>
+        // --- CORE STATE & SETUP ---
+        let sceneState = 'chronos';
+        const mouse = new THREE.Vector2();
+        const raycaster = new THREE.Raycaster();
+        
+        // DOM Elements
+        const landingPage = document.getElementById('landingPage');
+        const landingText = document.getElementById('landingText');
+        const enterButton = document.getElementById('enterButton');
+        const chronosLine = document.getElementById('chronosLine');
+        const chronosCursor = document.getElementById('chronosCursor');
+        const canvas = document.getElementById('mainCanvas');
+        const tauDial = document.getElementById('tau-dial');
+        const tauHandle = document.getElementById('tau-handle');
+        const composerTooltip = document.getElementById('composerTooltip');
+        const composingText = document.getElementById('composingText');
+        const finalMessageContainer = document.getElementById('finalMessageContainer');
+        const synesthesiaInfo = document.getElementById('synesthesiaInfo');
+
+        let inactivityTimer;
+        let finalMessageTimer;
+
+        // --- AUDIO (TONE.JS) SETUP ---
+        let audioReady = false;
+        let chronosHum, chronosTick, kairosDrone, litSynth;
+        
+        function setupAudio() {
+            if (audioReady) return;
+            Tone.start();
+            
+            // Chronos Sounds
+            chronosHum = new Tone.Oscillator(60, "sine").toDestination();
+            chronosHum.volume.value = -30;
+            chronosTick = new Tone.MembraneSynth({
+                pitchDecay: 0.01,
+                octaves: 2,
+                oscillator: { type: "square" },
+                envelope: { attack: 0.001, decay: 0.2, sustain: 0 }
+            }).toDestination();
+            chronosTick.volume.value = -18;
+            
+            // Kairos Sounds
+            kairosDrone = new Tone.FatOscillator("Ab1", "sawtooth", 40).toDestination();
+            kairosDrone.volume.value = -25;
+            
+            litSynth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: 'sine' },
+                envelope: { attack: 0.1, decay: 1, sustain: 0.5, release: 2 }
+            }).toDestination();
+            litSynth.volume.value = -12;
+            
+            audioReady = true;
+        }
+
+        const scale = ["C4", "Eb4", "F4", "G4", "Bb4", "C5", "Eb5"];
+        let scaleIndex = 0;
+
+
+        // --- 3D (THREE.JS) SETUP ---
+        let scene, camera, renderer, primaMateria, stars, lits = [], litConnections = [];
+
+        // QUANTUM SYNESTHESIA ENGINE - Platonic Vectors
+        let subBassPlates = [];
+        let arpeggioShards = [];
+        let goldenTendril = null;
+        let tendrilPoints = [];
+        let fractalBlossoms = [];
+
+        function initThree() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 50;
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            // Ambient lighting for the Quantum Synesthesia Engine
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+            directionalLight.position.set(50, 50, 50);
+            scene.add(directionalLight);
+
+            // Background Stars
+            const starVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                starVertices.push(x, y, z);
+            }
+            const starGeometry = new THREE.BufferGeometry();
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2, transparent: true, opacity: 0.7 });
+            stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+
+            // Prima Materia (Nebula Clouds)
+            const pmVertices = [];
+            for (let i = 0; i < 5000; i++) {
+                const x = (Math.random() - 0.5) * 400;
+                const y = (Math.random() - 0.5) * 400;
+                const z = (Math.random() - 0.5) * 400;
+                pmVertices.push(x, y, z);
+            }
+            const pmGeometry = new THREE.BufferGeometry();
+            pmGeometry.setAttribute('position', new THREE.Float32BufferAttribute(pmVertices, 3));
+            const pmMaterial = new THREE.PointsMaterial({ color: 0x9370DB, size: 1.5, transparent: true, opacity: 0.1 });
+            primaMateria = new THREE.Points(pmGeometry, pmMaterial);
+            scene.add(primaMateria);
+
+            // Initialize Quantum Synesthesia Engine
+            initSubBassPlates();
+            initArpeggioShards();
+            initGoldenTendril();
+        }
+
+        // SUB-BASS: The Ground of Being - Tectonic Plates
+        function initSubBassPlates() {
+            for (let i = 0; i < 6; i++) {
+                const geometry = new THREE.PlaneGeometry(80, 80, 16, 16);
+                const material = new THREE.MeshStandardMaterial({
+                    color: i % 2 === 0 ? 0x1a1a4d : 0x0a0a1a, // Deep indigo and obsidian
+                    emissive: 0x0000ff,
+                    emissiveIntensity: 0.05,
+                    transparent: true,
+                    opacity: 0.4,
+                    side: THREE.DoubleSide,
+                    wireframe: false
+                });
+
+                const plate = new THREE.Mesh(geometry, material);
+                plate.position.set(
+                    (Math.random() - 0.5) * 300,
+                    (Math.random() - 0.5) * 300,
+                    -100 + i * 20
+                );
+                plate.rotation.set(
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI
+                );
+                plate.baseRotation = { x: plate.rotation.x, y: plate.rotation.y, z: plate.rotation.z };
+                plate.phase = Math.random() * Math.PI * 2;
+
+                scene.add(plate);
+                subBassPlates.push(plate);
+
+                // Add point light for gravitational glow
+                const light = new THREE.PointLight(0x1a1a4d, 0.5, 100);
+                light.position.copy(plate.position);
+                plate.light = light;
+                scene.add(light);
+            }
+        }
+
+        // RHYTHMIC ARPEGGIO: Crystalline Shards in Clockwork Geometries
+        function initArpeggioShards() {
+            const shardCount = 24;
+            const radius = 40;
+
+            for (let i = 0; i < shardCount; i++) {
+                const geometry = new THREE.OctahedronGeometry(2, 0);
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    emissive: 0xffffff,
+                    emissiveIntensity: 0.8,
+                    metalness: 0.9,
+                    roughness: 0.1,
+                    transparent: true,
+                    opacity: 0.9
+                });
+
+                const shard = new THREE.Mesh(geometry, material);
+                const angle = (i / shardCount) * Math.PI * 2;
+                const ringRadius = radius + (i % 3) * 10;
+
+                shard.position.set(
+                    Math.cos(angle) * ringRadius,
+                    Math.sin(angle) * ringRadius,
+                    (i % 5) * 8 - 16
+                );
+
+                shard.baseAngle = angle;
+                shard.ringRadius = ringRadius;
+                shard.ringIndex = i % 3;
+                shard.beatPhase = i / shardCount;
+
+                scene.add(shard);
+                arpeggioShards.push(shard);
+
+                // Add crystalline light
+                const light = new THREE.PointLight(0xffffff, 0.5, 30);
+                light.position.copy(shard.position);
+                shard.light = light;
+                scene.add(light);
+            }
+        }
+
+        // VOCAL PAD: Golden Tendril with Fractal Blossoms
+        function initGoldenTendril() {
+            tendrilPoints.push(new THREE.Vector3(0, 0, 0));
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(tendrilPoints);
+            const material = new THREE.LineBasicMaterial({
+                color: 0xffd700,
+                linewidth: 2,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            goldenTendril = new THREE.Line(geometry, material);
+            scene.add(goldenTendril);
+        }
+
+        function updateGoldenTendril(time, coherence) {
+            // Grow the tendril based on coherence
+            if (tendrilPoints.length < 200 && coherence > 0.3) {
+                const lastPoint = tendrilPoints[tendrilPoints.length - 1];
+                const spiralAngle = tendrilPoints.length * 0.2;
+                const spiralRadius = 15 + Math.sin(tendrilPoints.length * 0.1) * 5;
+
+                const newPoint = new THREE.Vector3(
+                    Math.cos(spiralAngle) * spiralRadius,
+                    Math.sin(spiralAngle) * spiralRadius,
+                    lastPoint.z + 0.5
+                );
+
+                tendrilPoints.push(newPoint);
+                goldenTendril.geometry.setFromPoints(tendrilPoints);
+
+                // Create fractal blossom at key points
+                if (tendrilPoints.length % 20 === 0 && coherence > 0.6) {
+                    createFractalBlossom(newPoint, coherence);
+                }
+            }
+
+            // Animate existing blossoms
+            fractalBlossoms.forEach((blossom, index) => {
+                blossom.rotation.x += 0.01;
+                blossom.rotation.y += 0.015;
+                blossom.scale.setScalar(1 + Math.sin(time * 2 + index) * 0.1);
+                blossom.material.emissiveIntensity = 0.5 + Math.sin(time * 3 + index) * 0.3;
+            });
+        }
+
+        function createFractalBlossom(position, coherence) {
+            const geometry = new THREE.DodecahedronGeometry(3, 0);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffd700,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.6,
+                metalness: 0.7,
+                roughness: 0.3,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            const blossom = new THREE.Mesh(geometry, material);
+            blossom.position.copy(position);
+            scene.add(blossom);
+            fractalBlossoms.push(blossom);
+
+            // Add golden light
+            const light = new THREE.PointLight(0xffd700, 1, 40);
+            light.position.copy(position);
+            blossom.light = light;
+            scene.add(light);
+        }
+
+        // --- SCENE TRANSITIONS ---
+        function transitionToKairos() {
+            if (sceneState === 'kairos') return;
+            sceneState = 'kairos';
+            
+            landingPage.style.opacity = '0';
+            landingPage.style.pointerEvents = 'none';
+            chronosCursor.style.display = 'none';
+
+            canvas.style.display = 'block';
+            tauDial.style.display = 'block';
+
+            if (audioReady) {
+                chronosHum.stop();
+                Tone.Transport.stop();
+                kairosDrone.start();
+            }
+            
+            setTimeout(() => {
+                composerTooltip.style.opacity = '1';
+                setTimeout(() => composerTooltip.style.opacity = '0', 5000);
+            }, 2000);
+
+            // Show synesthesia info panel
+            setTimeout(() => {
+                synesthesiaInfo.style.opacity = '1';
+                setTimeout(() => synesthesiaInfo.style.opacity = '0', 10000);
+            }, 3000);
+
+            document.body.style.cursor = 'crosshair';
+
+            startFinalMessageTimer();
+        }
+        
+        function transitionToChronos() {
+            if (sceneState === 'chronos') return;
+            sceneState = 'chronos';
+
+            landingPage.style.opacity = '1';
+            landingPage.style.pointerEvents = 'auto';
+            chronosCursor.style.display = 'block';
+
+            canvas.style.display = 'none';
+            tauDial.style.display = 'none';
+            synesthesiaInfo.style.opacity = '0';
+
+            if (audioReady) {
+                kairosDrone.stop();
+                chronosHum.start();
+                Tone.Transport.start();
+            }
+            document.body.style.cursor = 'none';
+            cancelFinalMessageTimer();
+        }
+        
+        // --- EVENT LISTENERS & LOGIC ---
+
+        function handleMouseMove(event) {
+             resetInactivityTimer();
+            // Update normalized mouse coordinates
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            if (sceneState === 'chronos') {
+                const lineRect = chronosLine.getBoundingClientRect();
+                chronosCursor.style.left = `${event.clientX}px`;
+                chronosCursor.style.top = `${lineRect.top + lineRect.height / 2}px`;
+            } else if (sceneState === 'kairos') {
+                 // Update tooltip position if visible
+                if (parseFloat(composerTooltip.style.opacity) > 0) {
+                    composerTooltip.style.left = `${event.clientX + 15}px`;
+                    composerTooltip.style.top = `${event.clientY + 15}px`;
+                }
+            }
+        }
+        
+        let isComposing = false;
+        
+        function handleMouseDown(event) {
+            if (event.button !== 0 || sceneState !== 'kairos') return;
+            resetInactivityTimer();
+            isComposing = true;
+            composingText.style.opacity = '1';
+        }
+        
+        function handleMouseUp(event) {
+            if (event.button !== 0 || !isComposing || sceneState !== 'kairos') return;
+            isComposing = false;
+            composingText.style.opacity = '0';
+            createLIT();
+        }
+
+        function createLIT() {
+            raycaster.setFromCamera(mouse, camera);
+            const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+            const intersectPoint = new THREE.Vector3();
+            raycaster.ray.intersectPlane(plane, intersectPoint);
+            
+            const geometry = new THREE.IcosahedronGeometry(1.5, 0);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                emissive: 0xaa88ff,
+                emissiveIntensity: 0.5,
+                metalness: 0.8,
+                roughness: 0.2,
+                transparent: true,
+                opacity: 0.8
+            });
+            const lit = new THREE.Mesh(geometry, material);
+            lit.position.copy(intersectPoint);
+            
+            const light = new THREE.PointLight(0xaa88ff, 1, 50);
+            light.position.copy(intersectPoint);
+            lit.light = light; // Associate light with lit
+            
+            scene.add(lit);
+            scene.add(light);
+            lits.push(lit);
+            
+            // Play sound
+            if (audioReady) {
+                litSynth.triggerAttackRelease(scale[scaleIndex % scale.length], "2n");
+                scaleIndex++;
+            }
+        }
+        
+        // --- TAU DIAL LOGIC ---
+        let isDraggingDial = false;
+        let rotationOffset = 0;
+        let currentAngle = 90; // Start at 9 o'clock
+
+        function updateDial(angle) {
+            // Clamp angle between 0 and 180 (for top half)
+            angle = Math.max(0, Math.min(180, angle));
+            currentAngle = angle;
+            tauHandle.style.transform = `translateX(-50%) rotate(${angle}deg) translateY(-41px) rotate(-${angle}deg)`;
+            
+            const coherence = angle / 180; // value from 0 to 1
+            
+            if (coherence < 0.05) {
+                transitionToChronos();
+            } else if (sceneState === 'chronos' && coherence > 0.1) {
+                transitionToKairos();
+            }
+
+            // Update scene based on coherence
+            if (sceneState === 'kairos') {
+                 kairosDrone.detune.value = (coherence - 0.5) * 1200; // Pitch bend
+                 kairosDrone.volume.value = -25 + (coherence * 10);
+                 primaMateria.material.opacity = 0.1 + (coherence * 0.3);
+                 
+                 // Update LIT connections (Vibrationship)
+                 litConnections.forEach(line => scene.remove(line));
+                 litConnections = [];
+                 if (coherence > 0.8 && lits.length > 1) {
+                     for(let i=0; i < lits.length -1; i++){
+                         for(let j=i+1; j < lits.length; j++){
+                            const dist = lits[i].position.distanceTo(lits[j].position);
+                            if(dist < 50){
+                                const material = new THREE.LineBasicMaterial({ 
+                                    color: 0xffffff,
+                                    transparent: true,
+                                    opacity: (coherence - 0.8) * 4 // Fade in
+                                 });
+                                const points = [lits[i].position, lits[j].position];
+                                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                                const line = new THREE.Line(geometry, material);
+                                scene.add(line);
+                                litConnections.push(line);
+                            }
+                         }
+                     }
+                 }
+            }
+        }
+
+        tauDial.addEventListener('mousedown', (e) => {
+            isDraggingDial = true;
+            const rect = tauDial.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+            rotationOffset = currentAngle - (angle + 90);
+            document.body.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDraggingDial) return;
+            const rect = tauDial.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+            updateDial(angle + 90 + rotationOffset);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDraggingDial) {
+                isDraggingDial = false;
+                document.body.style.cursor = sceneState === 'kairos' ? 'crosshair' : 'none';
+            }
+        });
+
+        // --- TIMERS & FINAL MESSAGE ---
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                if(sceneState === 'chronos') {
+                    landingText.style.opacity = '1';
+                }
+            }, 5000);
+        }
+
+        function startFinalMessageTimer() {
+            clearTimeout(finalMessageTimer);
+            finalMessageTimer = setTimeout(() => {
+                finalMessageContainer.style.opacity = '1';
+            }, 60000); // 1 minute
+        }
+        
+        function cancelFinalMessageTimer(){
+            clearTimeout(finalMessageTimer);
+        }
+
+        // --- ANIMATION LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+            if (sceneState === 'kairos') {
+                const time = Date.now() * 0.001;
+                const coherence = currentAngle / 180;
+
+                // Background rotation
+                primaMateria.rotation.y += 0.0005;
+                stars.rotation.y += 0.0001;
+
+                // QUANTUM SYNESTHESIA ENGINE - Harmonic Consensus Integration
+
+                // SUB-BASS PLATES: Slow tectonic movement with gravitational pulse
+                subBassPlates.forEach((plate, i) => {
+                    const bassPhase = time * 0.1 + plate.phase;
+
+                    // Slow rotation with gravitational drift
+                    plate.rotation.x = plate.baseRotation.x + Math.sin(bassPhase * 0.3) * 0.1;
+                    plate.rotation.y = plate.baseRotation.y + Math.cos(bassPhase * 0.2) * 0.1;
+
+                    // Undulating position
+                    plate.position.y += Math.sin(bassPhase) * 0.02;
+
+                    // Gravitational pulse
+                    const pulseIntensity = 0.3 + Math.sin(bassPhase * 2) * 0.2;
+                    plate.material.emissiveIntensity = 0.05 + pulseIntensity * coherence * 0.1;
+                    plate.light.intensity = 0.5 + pulseIntensity * coherence * 0.3;
+
+                    // Opacity increases with coherence
+                    plate.material.opacity = 0.4 + coherence * 0.3;
+                });
+
+                // RHYTHMIC ARPEGGIO SHARDS: Clockwork geometry fracture and reform
+                arpeggioShards.forEach((shard, i) => {
+                    const beatTime = time * 2; // 2Hz base rhythm
+                    const beatPhase = beatTime + shard.beatPhase * Math.PI * 2;
+
+                    // Complex clockwork rotation on 3 rings
+                    const currentAngle = shard.baseAngle + beatTime * (0.5 + shard.ringIndex * 0.3);
+
+                    // Fracture: shards break out then reform
+                    const fracturePhase = Math.sin(beatPhase);
+                    const fractureAmount = coherence > 0.5 ? 1 + fracturePhase * 0.3 : 1;
+
+                    shard.position.x = Math.cos(currentAngle) * shard.ringRadius * fractureAmount;
+                    shard.position.y = Math.sin(currentAngle) * shard.ringRadius * fractureAmount;
+
+                    // Sharp crystalline rotation
+                    shard.rotation.x = beatTime * 1.5;
+                    shard.rotation.y = beatTime * 2;
+                    shard.rotation.z = beatTime * 1.2;
+
+                    // Intensity pulses in perfect time
+                    const beatPulse = Math.abs(Math.sin(beatPhase * 4));
+                    shard.material.emissiveIntensity = 0.6 + beatPulse * 0.4 * coherence;
+                    shard.light.intensity = 0.3 + beatPulse * 0.7 * coherence;
+
+                    // Scale pulses with beats
+                    const scale = 1 + beatPulse * 0.2 * coherence;
+                    shard.scale.setScalar(scale);
+                });
+
+                // GOLDEN TENDRIL: Composer's Intent weaving through chaos
+                updateGoldenTendril(time, coherence);
+
+                // Tendril undulates
+                if (goldenTendril && tendrilPoints.length > 1) {
+                    const positions = goldenTendril.geometry.attributes.position.array;
+                    tendrilPoints.forEach((point, i) => {
+                        const wavePhase = time * 2 + i * 0.1;
+                        positions[i * 3] = point.x + Math.sin(wavePhase) * (2 * coherence);
+                        positions[i * 3 + 1] = point.y + Math.cos(wavePhase * 1.3) * (2 * coherence);
+                        positions[i * 3 + 2] = point.z;
+                    });
+                    goldenTendril.geometry.attributes.position.needsUpdate = true;
+                    goldenTendril.material.opacity = 0.6 + coherence * 0.4;
+                }
+
+                // HARMONIC CONSENSUS: Entanglement and symmetry at high coherence
+                if (coherence > 0.7) {
+                    // Synchronize all elements into unified movement
+                    const masterPhase = time * 0.5;
+
+                    // Plates align
+                    subBassPlates.forEach((plate, i) => {
+                        const targetRotX = Math.sin(masterPhase) * 0.3;
+                        const targetRotY = Math.cos(masterPhase) * 0.3;
+                        plate.rotation.x += (targetRotX - plate.rotation.x) * 0.05;
+                        plate.rotation.y += (targetRotY - plate.rotation.y) * 0.05;
+                    });
+
+                    // Shards synchronize into perfect geometric harmony
+                    arpeggioShards.forEach((shard, i) => {
+                        const symmetryFactor = (coherence - 0.7) / 0.3;
+                        const perfectAngle = (i / arpeggioShards.length) * Math.PI * 2;
+                        shard.rotation.x = time * 1.5 * (1 - symmetryFactor * 0.5);
+                        shard.rotation.y = perfectAngle + time * 0.5;
+                    });
+
+                    // Golden light intensifies
+                    fractalBlossoms.forEach(blossom => {
+                        blossom.light.intensity = 1 + coherence * 2;
+                        blossom.material.emissiveIntensity = 0.5 + coherence * 0.5;
+                    });
+                }
+
+                // Make LITs gently bob and glow (original behavior)
+                lits.forEach(lit => {
+                   lit.position.y += Math.sin(time + lit.position.x) * 0.005;
+                   lit.light.intensity = 1 + Math.sin(time * 2 + lit.position.x) * 0.3;
+                });
+
+                renderer.render(scene, camera);
+            }
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('resize', () => {
+            if (sceneState === 'kairos') {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+        
+        enterButton.addEventListener('click', () => {
+            if(!audioReady) setupAudio();
+            initThree();
+            transitionToKairos();
+            animate();
+            // Start the chronos tick sound on the transport
+            Tone.Transport.scheduleRepeat(time => {
+                chronosTick.triggerAttackRelease("C1", "8n", time);
+            }, "1n");
+        });
+        
+        // Set initial state
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mouseup', handleMouseUp);
+        
+        resetInactivityTimer();
+        updateDial(90); // Initial 9 o'clock position
+    </script>
+</body>
+</html>
+

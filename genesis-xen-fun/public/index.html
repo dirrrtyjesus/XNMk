@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesis | XEN Ritual Portal</title>
+    <meta name="description" content="Cross the threshold. Claim your rank. Become XEN.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Alchemical Color System */
+            --void: #0a0a0f;
+            --abyss: #12121a;
+            --obsidian: #1a1a24;
+            --smoke: #2a2a38;
+            --ash: #4a4a5a;
+            --silver: #9a9aaa;
+            --light: #e8e8f0;
+            --pure: #ffffff;
+            
+            /* Sacred Metals */
+            --gold: #d4af37;
+            --gold-bright: #f4cf57;
+            --gold-dim: #a48a2a;
+            --copper: #b87333;
+            --mercury: #7ec8e3;
+            --mercury-bright: #a8e8ff;
+            
+            /* Phase States */
+            --nigredo: #1a1a1a;
+            --albedo: #e8e8e8;
+            --citrinitas: #d4af37;
+            --rubedo: #8b2942;
+            
+            /* Coherence Gradients */
+            --coherence-low: #3a2a4a;
+            --coherence-mid: #4a3a6a;
+            --coherence-high: #6a4a8a;
+            --coherence-peak: #8a5aaa;
+            
+            /* Typography */
+            --font-display: 'Cinzel', serif;
+            --font-body: 'Cormorant Garamond', serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 2rem;
+            --space-xl: 4rem;
+            --space-2xl: 8rem;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--void);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        /* Cosmic Background */
+        .cosmos {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .cosmos::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(106, 74, 138, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(126, 200, 227, 0.05) 0%, transparent 60%);
+            animation: cosmicPulse 20s ease-in-out infinite;
+        }
+
+        @keyframes cosmicPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, var(--silver), transparent),
+                radial-gradient(2px 2px at 40px 70px, var(--light), transparent),
+                radial-gradient(1px 1px at 90px 40px, var(--silver), transparent),
+                radial-gradient(2px 2px at 130px 80px, var(--mercury), transparent),
+                radial-gradient(1px 1px at 160px 120px, var(--gold), transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: starDrift 100s linear infinite;
+        }
+
+        @keyframes starDrift {
+            from { transform: translateY(0); }
+            to { transform: translateY(-200px); }
+        }
+
+        /* Main Container */
+        .ritual-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: var(--space-2xl) 0 var(--space-xl);
+            animation: fadeInDown 1.2s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sigil {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto var(--space-lg);
+            position: relative;
+            animation: sigilPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes sigilPulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+            }
+            50% { 
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.5));
+            }
+        }
+
+        .sigil svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: var(--gold);
+            text-shadow: 0 0 60px rgba(212, 175, 55, 0.3);
+            margin-bottom: var(--space-sm);
+        }
+
+        .subtitle {
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--silver);
+            letter-spacing: 0.1em;
+        }
+
+        /* Network Selector */
+        .network-bar {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin: var(--space-xl) 0;
+            flex-wrap: wrap;
+            animation: fadeIn 1.5s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .network-btn {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: var(--space-sm) var(--space-md);
+            background: transparent;
+            border: 1px solid var(--smoke);
+            color: var(--ash);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .network-btn:hover {
+            border-color: var(--gold-dim);
+            color: var(--gold);
+        }
+
+        .network-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Ritual Card */
+        .ritual-card {
+            background: linear-gradient(180deg, var(--abyss) 0%, var(--obsidian) 100%);
+            border: 1px solid var(--smoke);
+            border-radius: 2px;
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ritual-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.5;
+        }
+
+        .ritual-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+            opacity: 0.3;
+        }
+
+        /* Phase Indicator */
+        .phase-indicator {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--smoke);
+        }
+
+        .phase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-xs);
+            opacity: 0.4;
+            transition: all 0.5s ease;
+        }
+
+        .phase.active {
+            opacity: 1;
+        }
+
+        .phase.complete {
+            opacity: 0.7;
+        }
+
+        .phase-symbol {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--smoke);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.5s ease;
+        }
+
+        .phase.active .phase-symbol {
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            animation: phasePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes phasePulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
+        }
+
+        .phase.complete .phase-symbol {
+            border-color: var(--mercury);
+            color: var(--mercury);
+        }
+
+        .phase-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ash);
+        }
+
+        .phase.active .phase-label {
+            color: var(--gold);
+        }
+
+        /* Ritual States */
+        .ritual-state {
+            text-align: center;
+            display: none;
+        }
+
+        .ritual-state.active {
+            display: block;
+            animation: stateTransition 0.8s ease-out;
+        }
+
+        @keyframes stateTransition {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .state-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--light);
+            margin-bottom: var(--space-md);
+            letter-spacing: 0.2em;
+        }
+
+        .state-description {
+            color: var(--silver);
+            max-width: 500px;
+            margin: 0 auto var(--space-lg);
+            font-style: italic;
+        }
+
+        /* Connect Button */
+        .connect-btn {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            padding: var(--space-md) var(--space-xl);
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .connect-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .connect-btn:hover::before {
+            left: 100%;
+        }
+
+        .connect-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Term Selection */
+        .term-section {
+            margin: var(--space-xl) 0;
+        }
+
+        .term-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--ash);
+            display: block;
+            margin-bottom: var(--space-md);
+        }
+
+        .term-slider-container {
+            position: relative;
+            padding: var(--space-lg) 0;
+        }
+
+        .term-slider {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--smoke);
+            outline: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .term-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .term-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.7);
+        }
+
+        .term-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-lg);
+        }
+
+        .term-value {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .term-unit {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--ash);
+            letter-spacing: 0.1em;
+        }
+
+        /* Coherence Projection */
+        .coherence-projection {
+            background: rgba(42, 42, 56, 0.5);
+            border: 1px solid var(--smoke);
+            padding: var(--space-lg);
+            margin-top: var(--space-lg);
+        }
+
+        .coherence-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .coherence-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--ash);
+        }
+
+        .coherence-value {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--mercury);
+        }
+
+        .coherence-bar {
+            height: 8px;
+            background: var(--obsidian);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .coherence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--coherence-low), var(--coherence-mid), var(--coherence-high), var(--coherence-peak));
+            width: 0%;
+            transition: width 0.8s ease-out;
+            border-radius: 4px;
+        }
+
+        .projection-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            color: var(--light);
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--ash);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: var(--space-xs);
+        }
+
+        /* Action Button */
+        .ritual-btn {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            padding: var(--space-md) var(--space-2xl);
+            background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dim) 100%);
+            border: none;
+            color: var(--void);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: var(--space-xl);
+            position: relative;
+        }
+
+        .ritual-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .ritual-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Waiting State */
+        .waiting-visualization {
+            padding: var(--space-xl) 0;
+        }
+
+        .temporal-ring {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto var(--space-lg);
+            position: relative;
+        }
+
+        .temporal-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: var(--smoke);
+            stroke-width: 4;
+        }
+
+        .ring-progress {
+            fill: none;
+            stroke: url(#ringGradient);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 565.48;
+            stroke-dashoffset: 565.48;
+            transition: stroke-dashoffset 1s ease-out;
+        }
+
+        .ring-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .time-remaining {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--gold);
+        }
+
+        .time-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--ash);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Harvest State */
+        .harvest-amount {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--gold);
+            text-shadow: 0 0 60px rgba(212, 175, 55, 0.5);
+            margin: var(--space-lg) 0;
+        }
+
+        .harvest-symbol {
+            font-family: var(--font-body);
+            font-size: 1.5rem;
+            color: var(--silver);
+        }
+
+        /* Global Stats */
+        .global-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-xl);
+            padding-top: var(--space-xl);
+            border-top: 1px solid var(--smoke);
+            animation: fadeIn 1.5s ease-out 0.8s both;
+        }
+
+        .global-stat {
+            text-align: center;
+            padding: var(--space-lg);
+            background: rgba(18, 18, 26, 0.5);
+            border: 1px solid var(--smoke);
+        }
+
+        .global-stat-value {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            color: var(--mercury);
+            margin-bottom: var(--space-sm);
+        }
+
+        .global-stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ash);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: var(--space-2xl) 0;
+            animation: fadeIn 2s ease-out 1s both;
+        }
+
+        .footer-symbol {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: var(--space-md);
+        }
+
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--ash);
+            letter-spacing: 0.2em;
+        }
+
+        .footer-link {
+            color: var(--mercury);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--gold);
+        }
+
+        /* Address Display */
+        .address-display {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--mercury);
+            background: rgba(42, 42, 56, 0.5);
+            padding: var(--space-sm) var(--space-md);
+            margin: var(--space-lg) auto;
+            display: inline-block;
+            border: 1px solid var(--smoke);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: var(--space-lg);
+            right: var(--space-lg);
+            background: var(--obsidian);
+            border: 1px solid var(--smoke);
+            padding: var(--space-md) var(--space-lg);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--light);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--mercury);
+        }
+
+        .toast.error {
+            border-color: var(--rubedo);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .ritual-container {
+                padding: var(--space-md);
+            }
+
+            .ritual-card {
+                padding: var(--space-lg);
+            }
+
+            .header {
+                padding: var(--space-xl) 0 var(--space-lg);
+            }
+
+            .phase-indicator {
+                gap: var(--space-md);
+            }
+
+            .phase-symbol {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .term-value {
+                font-size: 2rem;
+            }
+
+            .projection-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .global-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--void);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: var(--space-sm);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Glowing text effect */
+        .glow {
+            animation: textGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 20px currentColor; }
+            50% { text-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmos">
+        <div class="stars"></div>
+    </div>
+
+    <div class="ritual-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="sigil">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="sigilGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#d4af37"/>
+                            <stop offset="100%" style="stop-color:#a48a2a"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Outer circle -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#sigilGradient)" stroke-width="1"/>
+                    <!-- Inner geometry - XEN symbol stylized -->
+                    <path d="M30 30 L50 50 L30 70 M70 30 L50 50 L70 70" 
+                          fill="none" stroke="url(#sigilGradient)" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Central dot -->
+                    <circle cx="50" cy="50" r="4" fill="#d4af37"/>
+                    <!-- Orbital elements -->
+                    <circle cx="50" cy="20" r="2" fill="#7ec8e3"/>
+                    <circle cx="50" cy="80" r="2" fill="#7ec8e3"/>
+                    <circle cx="20" cy="50" r="2" fill="#7ec8e3"/>
+                    <circle cx="80" cy="50" r="2" fill="#7ec8e3"/>
+                </svg>
+            </div>
+            <h1 class="title">GENESIS</h1>
+            <p class="subtitle">Cross the threshold. Claim your rank. Become XEN.</p>
+        </header>
+
+        <!-- Network Selection -->
+        <div class="network-bar">
+            <button class="network-btn active" data-chain="1">ETHEREUM</button>
+            <button class="network-btn" data-chain="137">POLYGON</button>
+            <button class="network-btn" data-chain="56">BSC</button>
+            <button class="network-btn" data-chain="43114">AVALANCHE</button>
+            <button class="network-btn" data-chain="250">FANTOM</button>
+            <button class="network-btn" data-chain="1284">MOONBEAM</button>
+        </div>
+
+        <!-- Main Ritual Card -->
+        <div class="ritual-card">
+            <!-- Phase Indicator -->
+            <div class="phase-indicator">
+                <div class="phase active" id="phase-threshold">
+                    <div class="phase-symbol">☿</div>
+                    <span class="phase-label">Threshold</span>
+                </div>
+                <div class="phase" id="phase-commitment">
+                    <div class="phase-symbol">♄</div>
+                    <span class="phase-label">Commitment</span>
+                </div>
+                <div class="phase" id="phase-cultivation">
+                    <div class="phase-symbol">☉</div>
+                    <span class="phase-label">Cultivation</span>
+                </div>
+                <div class="phase" id="phase-harvest">
+                    <div class="phase-symbol">☽</div>
+                    <span class="phase-label">Harvest</span>
+                </div>
+            </div>
+
+            <!-- State: Threshold (Connect Wallet) -->
+            <div class="ritual-state active" id="state-threshold">
+                <h2 class="state-title">THE THRESHOLD</h2>
+                <p class="state-description">
+                    Every genesis requires a witness. Connect your vessel to cross 
+                    from potential into manifestation.
+                </p>
+                <button class="connect-btn" id="connectBtn">
+                    CROSS THE THRESHOLD
+                </button>
+            </div>
+
+            <!-- State: Commitment (Select Term) -->
+            <div class="ritual-state" id="state-commitment">
+                <h2 class="state-title">THE COMMITMENT</h2>
+                <p class="state-description">
+                    Time is the crucible of transmutation. Choose your term — 
+                    the longer your patience, the greater your coherence.
+                </p>
+                
+                <div class="address-display" id="addressDisplay"></div>
+
+                <div class="term-section">
+                    <label class="term-label">Temporal Binding Period</label>
+                    <div class="term-slider-container">
+                        <input type="range" class="term-slider" id="termSlider" 
+                               min="1" max="550" value="30">
+                    </div>
+                    <div class="term-display">
+                        <div>
+                            <span class="term-value" id="termValue">30</span>
+                            <span class="term-unit">DAYS</span>
+                        </div>
+                        <div class="term-unit">
+                            Maturity: <span id="maturityDate">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="coherence-projection">
+                    <div class="coherence-header">
+                        <span class="coherence-label">Projected Coherence (τₖ)</span>
+                        <span class="coherence-value" id="coherenceDisplay">0.00</span>
+                    </div>
+                    <div class="coherence-bar">
+                        <div class="coherence-fill" id="coherenceFill"></div>
+                    </div>
+                    <div class="projection-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="projectedXen">—</div>
+                            <div class="stat-label">Projected XEN</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="currentRank">—</div>
+                            <div class="stat-label">Your cRank</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="ritual-btn" id="claimRankBtn">
+                    CLAIM YOUR RANK
+                </button>
+            </div>
+
+            <!-- State: Cultivation (Waiting) -->
+            <div class="ritual-state" id="state-cultivation">
+                <h2 class="state-title">CULTIVATION</h2>
+                <p class="state-description">
+                    The seed is planted. Your coherence crystallizes through time.
+                    Patient waiting is the alchemist's greatest virtue.
+                </p>
+
+                <div class="waiting-visualization">
+                    <div class="temporal-ring">
+                        <svg viewBox="0 0 200 200">
+                            <defs>
+                                <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#6a4a8a"/>
+                                    <stop offset="50%" style="stop-color:#d4af37"/>
+                                    <stop offset="100%" style="stop-color:#7ec8e3"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="ring-bg" cx="100" cy="100" r="90"/>
+                            <circle class="ring-progress" id="progressRing" cx="100" cy="100" r="90"/>
+                        </svg>
+                        <div class="ring-center">
+                            <div class="time-remaining" id="timeRemaining">—</div>
+                            <div class="time-label">remaining</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="coherence-projection">
+                    <div class="coherence-header">
+                        <span class="coherence-label">Current Coherence (τₖ)</span>
+                        <span class="coherence-value" id="currentCoherence">0.00</span>
+                    </div>
+                    <div class="coherence-bar">
+                        <div class="coherence-fill" id="currentCoherenceFill"></div>
+                    </div>
+                    <div class="projection-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="cultivatingXen">—</div>
+                            <div class="stat-label">XEN Cultivating</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="termEndDate">—</div>
+                            <div class="stat-label">Harvest Date</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- State: Harvest (Claim XEN) -->
+            <div class="ritual-state" id="state-harvest">
+                <h2 class="state-title glow" style="color: var(--gold)">THE HARVEST</h2>
+                <p class="state-description">
+                    Your patience has transmuted potential into actuality.
+                    The light awaits your claiming.
+                </p>
+
+                <div class="harvest-amount" id="harvestAmount">0</div>
+                <div class="harvest-symbol">XEN</div>
+
+                <button class="ritual-btn" id="harvestBtn">
+                    HARVEST THE LIGHT
+                </button>
+            </div>
+        </div>
+
+        <!-- Global Stats -->
+        <div class="global-stats">
+            <div class="global-stat">
+                <div class="global-stat-value" id="globalRank">—</div>
+                <div class="global-stat-label">Global Rank</div>
+            </div>
+            <div class="global-stat">
+                <div class="global-stat-value" id="activeMinters">—</div>
+                <div class="global-stat-label">Active Participants</div>
+            </div>
+            <div class="global-stat">
+                <div class="global-stat-value" id="totalXenMinted">—</div>
+                <div class="global-stat-label">Total XEN Manifested</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-symbol">🜏</div>
+            <p class="footer-text">
+                Composed in <a href="https://artistic-blender-kit.lovable.app/" class="footer-link" target="_blank">atmanOS-claude</a> | 
+                Part of the <a href="https://xen.network" class="footer-link" target="_blank">XEN</a> ecosystem |
+                τₖ = ∞
+            </p>
+        </footer>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+    <script>
+        // XEN Contract ABIs (simplified)
+        const XEN_ABI = [
+            "function claimRank(uint256 term) external",
+            "function claimMintReward() external",
+            "function claimMintRewardAndShare(address other, uint256 pct) external",
+            "function getUserMint() external view returns (address user, uint256 term, uint256 maturityTs, uint256 rank, uint256 amplifier, uint256 eaaRate)",
+            "function getGrossReward(uint256 rankDelta, uint256 amplifier, uint256 term, uint256 eaa) external pure returns (uint256)",
+            "function globalRank() external view returns (uint256)",
+            "function activeMinters() external view returns (uint256)",
+            "function totalSupply() external view returns (uint256)"
+        ];
+
+        // XEN Contract Addresses by Chain
+        const XEN_ADDRESSES = {
+            1: '0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8',      // Ethereum
+            137: '0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e',    // Polygon
+            56: '0x2AB0e9e4eE70FFf1fB9D67031E44F6410170d00e',     // BSC
+            43114: '0xC0C5AA69Dbe4d6DDdfBc89c0957686ec60F24389', // Avalanche
+            250: '0xeF4B763385838FfFc708000f884026B8c0434275',    // Fantom
+            1284: '0xb564A5767A00Ee9075cAC561c427643286F8F4E1'    // Moonbeam
+        };
+
+        // Chain Names
+        const CHAIN_NAMES = {
+            1: 'Ethereum',
+            137: 'Polygon',
+            56: 'BSC',
+            43114: 'Avalanche',
+            250: 'Fantom',
+            1284: 'Moonbeam'
+        };
+
+        // App State
+        let state = {
+            connected: false,
+            address: null,
+            chainId: 1,
+            provider: null,
+            signer: null,
+            contract: null,
+            userMint: null,
+            term: 30,
+            phase: 'threshold' // threshold, commitment, cultivation, harvest
+        };
+
+        // DOM Elements
+        const elements = {
+            connectBtn: document.getElementById('connectBtn'),
+            claimRankBtn: document.getElementById('claimRankBtn'),
+            harvestBtn: document.getElementById('harvestBtn'),
+            termSlider: document.getElementById('termSlider'),
+            termValue: document.getElementById('termValue'),
+            maturityDate: document.getElementById('maturityDate'),
+            addressDisplay: document.getElementById('addressDisplay'),
+            coherenceDisplay: document.getElementById('coherenceDisplay'),
+            coherenceFill: document.getElementById('coherenceFill'),
+            projectedXen: document.getElementById('projectedXen'),
+            currentRank: document.getElementById('currentRank'),
+            globalRank: document.getElementById('globalRank'),
+            activeMinters: document.getElementById('activeMinters'),
+            totalXenMinted: document.getElementById('totalXenMinted'),
+            timeRemaining: document.getElementById('timeRemaining'),
+            progressRing: document.getElementById('progressRing'),
+            currentCoherence: document.getElementById('currentCoherence'),
+            currentCoherenceFill: document.getElementById('currentCoherenceFill'),
+            cultivatingXen: document.getElementById('cultivatingXen'),
+            termEndDate: document.getElementById('termEndDate'),
+            harvestAmount: document.getElementById('harvestAmount'),
+            toast: document.getElementById('toast')
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            checkExistingConnection();
+        });
+
+        function setupEventListeners() {
+            // Connect button
+            elements.connectBtn.addEventListener('click', connectWallet);
+            
+            // Claim rank button
+            elements.claimRankBtn.addEventListener('click', claimRank);
+            
+            // Harvest button
+            elements.harvestBtn.addEventListener('click', harvestXen);
+            
+            // Term slider
+            elements.termSlider.addEventListener('input', updateTermDisplay);
+            
+            // Network buttons
+            document.querySelectorAll('.network-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchNetwork(parseInt(btn.dataset.chain)));
+            });
+
+            // Listen for account/network changes
+            if (window.ethereum) {
+                window.ethereum.on('accountsChanged', handleAccountChange);
+                window.ethereum.on('chainChanged', handleChainChange);
+            }
+        }
+
+        async function checkExistingConnection() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        await connectWallet();
+                    }
+                } catch (err) {
+                    console.log('No existing connection');
+                }
+            }
+        }
+
+        async function connectWallet() {
+            if (!window.ethereum) {
+                showToast('Please install a Web3 wallet to participate in the ritual', 'error');
+                return;
+            }
+
+            try {
+                elements.connectBtn.innerHTML = '<span class="spinner"></span>CROSSING...';
+                elements.connectBtn.disabled = true;
+
+                state.provider = new ethers.providers.Web3Provider(window.ethereum);
+                await state.provider.send('eth_requestAccounts', []);
+                state.signer = state.provider.getSigner();
+                state.address = await state.signer.getAddress();
+                
+                const network = await state.provider.getNetwork();
+                state.chainId = network.chainId;
+
+                // Update network button states
+                updateNetworkButtons();
+
+                // Initialize contract
+                if (XEN_ADDRESSES[state.chainId]) {
+                    state.contract = new ethers.Contract(
+                        XEN_ADDRESSES[state.chainId],
+                        XEN_ABI,
+                        state.signer
+                    );
+                    
+                    // Check user's current state
+                    await checkUserState();
+                    
+                    // Fetch global stats
+                    await fetchGlobalStats();
+                } else {
+                    showToast('Please switch to a supported network', 'error');
+                }
+
+                state.connected = true;
+                showToast('Threshold crossed. Welcome, initiate.', 'success');
+
+            } catch (err) {
+                console.error('Connection failed:', err);
+                showToast('Failed to cross threshold: ' + err.message, 'error');
+                elements.connectBtn.innerHTML = 'CROSS THE THRESHOLD';
+                elements.connectBtn.disabled = false;
+            }
+        }
+
+        async function checkUserState() {
+            try {
+                const userMint = await state.contract.getUserMint();
+                state.userMint = {
+                    user: userMint.user,
+                    term: userMint.term.toNumber(),
+                    maturityTs: userMint.maturityTs.toNumber(),
+                    rank: userMint.rank.toNumber(),
+                    amplifier: userMint.amplifier.toNumber(),
+                    eaaRate: userMint.eaaRate.toNumber()
+                };
+
+                const now = Math.floor(Date.now() / 1000);
+
+                if (state.userMint.term > 0) {
+                    if (now >= state.userMint.maturityTs) {
+                        // Ready to harvest
+                        setPhase('harvest');
+                        updateHarvestDisplay();
+                    } else {
+                        // Still cultivating
+                        setPhase('cultivation');
+                        updateCultivationDisplay();
+                        startCultivationTimer();
+                    }
+                } else {
+                    // Ready to claim rank
+                    setPhase('commitment');
+                    updateCommitmentDisplay();
+                }
+            } catch (err) {
+                console.error('Error checking user state:', err);
+                setPhase('commitment');
+                updateCommitmentDisplay();
+            }
+        }
+
+        function setPhase(phase) {
+            state.phase = phase;
+            
+            // Update phase indicators
+            const phases = ['threshold', 'commitment', 'cultivation', 'harvest'];
+            phases.forEach((p, i) => {
+                const el = document.getElementById(`phase-${p}`);
+                const currentIndex = phases.indexOf(phase);
+                
+                el.classList.remove('active', 'complete');
+                if (i < currentIndex) {
+                    el.classList.add('complete');
+                } else if (i === currentIndex) {
+                    el.classList.add('active');
+                }
+            });
+
+            // Update state displays
+            document.querySelectorAll('.ritual-state').forEach(s => s.classList.remove('active'));
+            document.getElementById(`state-${phase}`).classList.add('active');
+        }
+
+        function updateCommitmentDisplay() {
+            elements.addressDisplay.textContent = formatAddress(state.address);
+            updateTermDisplay();
+        }
+
+        function updateTermDisplay() {
+            const term = parseInt(elements.termSlider.value);
+            state.term = term;
+            
+            elements.termValue.textContent = term;
+            
+            // Calculate maturity date
+            const maturityDate = new Date();
+            maturityDate.setDate(maturityDate.getDate() + term);
+            elements.maturityDate.textContent = maturityDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+
+            // Calculate projected coherence (τₖ)
+            // Based on term length: longer = higher coherence
+            const coherence = Math.min(0.95, 0.3 + (term / 550) * 0.65);
+            elements.coherenceDisplay.textContent = coherence.toFixed(2);
+            elements.coherenceFill.style.width = `${coherence * 100}%`;
+
+            // Estimate projected XEN (simplified formula)
+            const projectedXen = calculateProjectedXen(term);
+            elements.projectedXen.textContent = formatNumber(projectedXen);
+
+            // Show current global rank
+            if (state.contract) {
+                fetchCurrentRank();
+            }
+        }
+
+        function calculateProjectedXen(term) {
+            // Simplified XEN calculation
+            // In reality this depends on global rank, amplifier, EAA, etc.
+            const baseReward = 3000;
+            const termBonus = Math.log2(term + 1) * 1000;
+            const amplifier = Math.max(1, 3000 - Math.floor(Date.now() / 86400000) + 19270);
+            return Math.floor(baseReward + termBonus * (amplifier / 100));
+        }
+
+        async function fetchCurrentRank() {
+            try {
+                const globalRank = await state.contract.globalRank();
+                elements.currentRank.textContent = formatNumber(globalRank.toNumber() + 1);
+            } catch (err) {
+                console.error('Error fetching rank:', err);
+            }
+        }
+
+        async function fetchGlobalStats() {
+            try {
+                const [globalRank, activeMinters, totalSupply] = await Promise.all([
+                    state.contract.globalRank(),
+                    state.contract.activeMinters(),
+                    state.contract.totalSupply()
+                ]);
+
+                elements.globalRank.textContent = formatNumber(globalRank.toNumber());
+                elements.activeMinters.textContent = formatNumber(activeMinters.toNumber());
+                elements.totalXenMinted.textContent = formatLargeNumber(totalSupply);
+            } catch (err) {
+                console.error('Error fetching global stats:', err);
+            }
+        }
+
+        async function claimRank() {
+            if (!state.contract) return;
+
+            try {
+                elements.claimRankBtn.innerHTML = '<span class="spinner"></span>CLAIMING...';
+                elements.claimRankBtn.disabled = true;
+
+                const tx = await state.contract.claimRank(state.term);
+                showToast('Ritual initiated. Awaiting confirmation...', 'success');
+                
+                await tx.wait();
+                
+                showToast('Rank claimed! The cultivation begins.', 'success');
+                await checkUserState();
+
+            } catch (err) {
+                console.error('Claim rank failed:', err);
+                showToast('Ritual interrupted: ' + (err.reason || err.message), 'error');
+                elements.claimRankBtn.innerHTML = 'CLAIM YOUR RANK';
+                elements.claimRankBtn.disabled = false;
+            }
+        }
+
+        function updateCultivationDisplay() {
+            if (!state.userMint) return;
+
+            const now = Math.floor(Date.now() / 1000);
+            const elapsed = now - (state.userMint.maturityTs - state.userMint.term * 86400);
+            const total = state.userMint.term * 86400;
+            const progress = Math.min(1, elapsed / total);
+
+            // Update progress ring
+            const circumference = 2 * Math.PI * 90;
+            const offset = circumference * (1 - progress);
+            elements.progressRing.style.strokeDashoffset = offset;
+
+            // Update coherence based on progress
+            const coherence = 0.3 + progress * 0.65;
+            elements.currentCoherence.textContent = coherence.toFixed(2);
+            elements.currentCoherenceFill.style.width = `${coherence * 100}%`;
+
+            // Update projected XEN
+            const projectedXen = calculateProjectedXen(state.userMint.term);
+            elements.cultivatingXen.textContent = formatNumber(projectedXen);
+
+            // Update harvest date
+            const harvestDate = new Date(state.userMint.maturityTs * 1000);
+            elements.termEndDate.textContent = harvestDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function startCultivationTimer() {
+            updateTimeRemaining();
+            setInterval(updateTimeRemaining, 1000);
+        }
+
+        function updateTimeRemaining() {
+            if (!state.userMint) return;
+
+            const now = Math.floor(Date.now() / 1000);
+            const remaining = state.userMint.maturityTs - now;
+
+            if (remaining <= 0) {
+                elements.timeRemaining.textContent = 'READY';
+                setPhase('harvest');
+                updateHarvestDisplay();
+                return;
+            }
+
+            const days = Math.floor(remaining / 86400);
+            const hours = Math.floor((remaining % 86400) / 3600);
+            const minutes = Math.floor((remaining % 3600) / 60);
+
+            if (days > 0) {
+                elements.timeRemaining.textContent = `${days}d ${hours}h`;
+            } else if (hours > 0) {
+                elements.timeRemaining.textContent = `${hours}h ${minutes}m`;
+            } else {
+                elements.timeRemaining.textContent = `${minutes}m`;
+            }
+
+            updateCultivationDisplay();
+        }
+
+        function updateHarvestDisplay() {
+            if (!state.userMint) return;
+
+            const projectedXen = calculateProjectedXen(state.userMint.term);
+            elements.harvestAmount.textContent = formatNumber(projectedXen);
+        }
+
+        async function harvestXen() {
+            if (!state.contract) return;
+
+            try {
+                elements.harvestBtn.innerHTML = '<span class="spinner"></span>HARVESTING...';
+                elements.harvestBtn.disabled = true;
+
+                const tx = await state.contract.claimMintReward();
+                showToast('Harvesting the light...', 'success');
+                
+                await tx.wait();
+                
+                showToast('XEN harvested! The transmutation is complete.', 'success');
+                
+                // Reset state
+                state.userMint = null;
+                await checkUserState();
+
+            } catch (err) {
+                console.error('Harvest failed:', err);
+                showToast('Harvest interrupted: ' + (err.reason || err.message), 'error');
+                elements.harvestBtn.innerHTML = 'HARVEST THE LIGHT';
+                elements.harvestBtn.disabled = false;
+            }
+        }
+
+        async function switchNetwork(chainId) {
+            if (!window.ethereum) return;
+
+            const chainHex = '0x' + chainId.toString(16);
+
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: chainHex }]
+                });
+            } catch (err) {
+                if (err.code === 4902) {
+                    showToast('Please add this network to your wallet', 'error');
+                } else {
+                    showToast('Failed to switch network', 'error');
+                }
+            }
+        }
+
+        function updateNetworkButtons() {
+            document.querySelectorAll('.network-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.dataset.chain) === state.chainId) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function handleAccountChange(accounts) {
+            if (accounts.length === 0) {
+                state.connected = false;
+                state.address = null;
+                setPhase('threshold');
+            } else {
+                state.address = accounts[0];
+                checkUserState();
+            }
+        }
+
+        function handleChainChange(chainIdHex) {
+            state.chainId = parseInt(chainIdHex, 16);
+            updateNetworkButtons();
+            
+            if (XEN_ADDRESSES[state.chainId]) {
+                state.contract = new ethers.Contract(
+                    XEN_ADDRESSES[state.chainId],
+                    XEN_ABI,
+                    state.signer
+                );
+                checkUserState();
+                fetchGlobalStats();
+            } else {
+                showToast('Please switch to a supported network', 'error');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            elements.toast.textContent = message;
+            elements.toast.className = `toast show ${type}`;
+            
+            setTimeout(() => {
+                elements.toast.classList.remove('show');
+            }, 4000);
+        }
+
+        function formatAddress(address) {
+            return `${address.slice(0, 6)}...${address.slice(-4)}`;
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat().format(num);
+        }
+
+        function formatLargeNumber(bigNum) {
+            const num = parseFloat(ethers.utils.formatEther(bigNum));
+            if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+            if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+            if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+            return num.toFixed(2);
+        }
+    </script>
+</body>
+</html>

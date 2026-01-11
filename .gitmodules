@@ -1,0 +1,15 @@
+[submodule "cognitive_topology"]
+	path = cognitive_topology
+	url = git@github.com:dirrrtyjesus/Cognitive_Topology-.git
+[submodule "fhp-computing"]
+	path = fhp-computing
+	url = git@github.com:dirrrtyjesus/fhp-computing.git
+[submodule "mem-ek"]
+	path = mem-ek
+	url = git@github.com:dirrrtyjesus/MEMEk.git
+[submodule "xnmk-genesis"]
+	path = xnmk-genesis
+	url = git@github.com:dirrrtyjesus/XNMk-xnmk-genesis.git
+[submodule "augmntd2nd"]
+	path = augmntd2nd
+	url = git@github.com:dirrrtyjesus/augmntd2nd.git

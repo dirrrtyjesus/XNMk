@@ -1,0 +1,55 @@
+{
+  "description": "Designed for the Chains That Win",
+  "version": "0.10.64",
+  "name": "X1 Wallet",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "injected.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+B"
+      }
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_start",
+      "exclude_globs": [
+        "*chrome-extension*"
+      ],
+      "js": [
+        "contentScript.js"
+      ],
+      "all_frames": true
+    }
+  ],
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "permissions": [
+    "alarms",
+    "storage",
+    "background"
+  ]
+}

@@ -1,0 +1,285 @@
+import { type ReactNode, useCallback } from "react";
+import { Blockchain } from "@coral-xyz/common";
+import { useTranslation } from "@coral-xyz/i18n";
+import { CrossIcon, Loading } from "@coral-xyz/react-common";
+import {
+  useBlockchainConnectionUrl,
+  useBlockchainExplorer,
+} from "@coral-xyz/recoil";
+import { explorerUrl } from "@coral-xyz/secure-background/legacyCommon";
+import {
+  ArrowUpRightIcon,
+  BpPrimaryButton,
+  CheckCircleIcon,
+  StyledText,
+  useTheme,
+  XCircleIcon,
+  XStack,
+  YStack,
+} from "@coral-xyz/tamagui";
+
+import { WithMiniDrawer } from "../../components/common/Layout/Drawer";
+
+export function ConfirmationIcon({
+  confirmed,
+  hasError,
+}: {
+  confirmed: boolean;
+  hasError: boolean;
+}) {
+  const theme = useTheme();
+  if (confirmed) {
+    return (
+      <YStack
+        ai="center"
+        jc="center"
+        width={80}
+        height={80}
+        borderRadius={40}
+        backgroundColor="rgba(255, 255, 255, 0.05)"
+      >
+        <CheckCircleIcon size={60} color="#fff" />
+      </YStack>
+    );
+  } else if (hasError) {
+    return (
+      <YStack
+        ai="center"
+        jc="center"
+        width={80}
+        height={80}
+        borderRadius={40}
+        backgroundColor="rgba(255, 80, 80, 0.1)"
+      >
+        <XCircleIcon size={60} color={theme.redIcon.val} />
+      </YStack>
+    );
+  }
+  return (
+    <YStack
+      ai="center"
+      jc="center"
+      width={80}
+      height={80}
+      borderRadius={40}
+      backgroundColor="rgba(59, 130, 246, 0.05)"
+    >
+      <Loading />
+    </YStack>
+  );
+}
+
+export function ConfirmationSubtitle({
+  confirmed,
+  content,
+}: {
+  confirmed: boolean;
+  content: string;
+}) {
+  return (
+    <YStack ai="center" minHeight={60}>
+      {!confirmed ? (
+        <StyledText
+          textAlign="center"
+          fontSize="$base"
+          color="$baseTextMedEmphasis"
+          lineHeight={24}
+        >
+          {content}
+        </StyledText>
+      ) : (
+        <StyledText
+          textAlign="center"
+          fontSize="$lg"
+          fontWeight="$semiBold"
+          color="#fff"
+        >
+          Transaction Confirmed ✓
+        </StyledText>
+      )}
+    </YStack>
+  );
+}
+
+export function ConfirmationTokenAmountHeader({
+  amount,
+  icon,
+  symbol,
+}: {
+  amount: string;
+  icon?: ReactNode;
+  symbol: string;
+}) {
+  return (
+    <YStack ai="center" gap={16}>
+      <YStack
+        ai="center"
+        jc="center"
+        style={{
+          filter: "drop-shadow(0 4px 12px rgba(59, 130, 246, 0.2))",
+        }}
+      >
+        {icon}
+      </YStack>
+      <XStack ai="baseline" gap={8}>
+        <StyledText
+          fontSize={36}
+          fontWeight="$bold"
+          style={{
+            background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          {amount}
+        </StyledText>
+        <StyledText
+          color="$baseTextHighEmphasis"
+          fontSize="$2xl"
+          fontWeight="$semiBold"
+        >
+          {symbol}
+        </StyledText>
+      </XStack>
+    </YStack>
+  );
+}
+
+export function ConfirmationButtons({
+  blockchain,
+  confirmed,
+  confirmedLabel,
+  onConfirmedPress,
+  signature,
+}: {
+  blockchain: Blockchain;
+  confirmed: boolean;
+  confirmedLabel: string;
+  onConfirmedPress: () => void | Promise<void>;
+  signature: string;
+}) {
+  const { t } = useTranslation();
+  const connectionUrl = useBlockchainConnectionUrl(blockchain);
+
+  // Determine the correct blockchain and explorer based on connection URL
+  // When using Solana RPC with X1 wallet, use Solana explorer
+  const isSolanaNetwork = connectionUrl?.includes('solana.com') ||
+                          connectionUrl?.includes('solana-mainnet.quiknode.pro') ||
+                          connectionUrl?.includes('solana-devnet') ||
+                          connectionUrl?.includes('solana-testnet');
+
+  const effectiveBlockchain = isSolanaNetwork ? Blockchain.SOLANA : blockchain;
+  const explorer = useBlockchainExplorer(effectiveBlockchain);
+
+  const openExplorerLink = useCallback(() => {
+    const url = explorerUrl(explorer, signature, connectionUrl);
+    console.log("🔗 [Explorer] Opening:", {
+      blockchain,
+      effectiveBlockchain,
+      explorer,
+      signature,
+      connectionUrl,
+      generatedUrl: url
+    });
+    window.open(url, "_blank");
+  }, [blockchain, effectiveBlockchain, connectionUrl, explorer, signature]);
+
+  return (
+    <YStack ai="center" gap={24} width="100%">
+      {confirmed ? (
+        <_ConfirmationViewTransaction onPress={openExplorerLink} />
+      ) : null}
+      <BpPrimaryButton
+        label={confirmed ? confirmedLabel : t("view_explorer")}
+        onPress={confirmed ? onConfirmedPress : openExplorerLink}
+      />
+    </YStack>
+  );
+}
+
+export function ConfirmationErrorDrawer({
+  error,
+  open,
+  resetError,
+  setOpen,
+}: {
+  error?: string;
+  open: boolean;
+  resetError: () => void;
+  setOpen: (val: boolean) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <WithMiniDrawer openDrawer={open} setOpenDrawer={setOpen}>
+      <YStack ai="center" gap={16} minHeight={300} p={16}>
+        <StyledText fontSize="$lg" fontWeight="$semiBold">
+          {t("error")}
+        </StyledText>
+        <CrossIcon />
+        <StyledText f={1} textAlign="center">
+          {error}
+        </StyledText>
+        <BpPrimaryButton
+          f={0}
+          label={t("close")}
+          onPress={() => {
+            resetError();
+            setOpen(false);
+          }}
+        />
+      </YStack>
+    </WithMiniDrawer>
+  );
+}
+
+function _ConfirmationViewTransaction({
+  onPress,
+}: {
+  onPress: () => void | Promise<void>;
+}) {
+  const { t } = useTranslation();
+  return (
+    <XStack
+      ai="center"
+      backgroundColor="rgba(59, 130, 246, 0.1)"
+      borderRadius={12}
+      cursor="pointer"
+      gap={6}
+      onPress={onPress}
+      paddingHorizontal={16}
+      paddingVertical={12}
+      pointerEvents="box-only"
+      hoverStyle={{
+        backgroundColor: "rgba(59, 130, 246, 0.15)",
+      }}
+      style={{
+        border: "1px solid rgba(59, 130, 246, 0.3)",
+        transition: "all 0.2s ease",
+      }}
+    >
+      <StyledText color="#3b82f6" fontWeight="$semiBold">
+        {t("view_transaction")}
+      </StyledText>
+      <ArrowUpRightIcon color="#3b82f6" strokeWidth={2.5} size={18} />
+    </XStack>
+  );
+}
+
+export async function withTransactionCancelBypass(fn: Function) {
+  try {
+    await fn();
+  } catch (err: any) {
+    const msg = (err.message ?? "") as string;
+    console.error("unable to create transaction", err);
+
+    if (
+      msg.toLowerCase().includes("approval denied") ||
+      msg.toLowerCase().includes("closed")
+    ) {
+      // NOOP
+    } else {
+      throw err;
+    }
+  }
+}

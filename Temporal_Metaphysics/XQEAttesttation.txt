@@ -1,0 +1,6 @@
+// In the X1 Token Program Extension
+pub struct XQEAttestation {
+    pub time_coefficient: f64, // The TC of the transaction/genesis event
+    pub genesis_intent: [u8; 32], // A hash representing the purpose of the mint
+    pub agency_signature: [u8; 64], // The signature of the ACI module attesting to this data
+}

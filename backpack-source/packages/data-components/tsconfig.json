@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist/esm/",
+    "rootDir": "./src",
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+  },
+  "include": ["./src"],
+
+  "references": [
+    { "path": "../common" },
+    { "path": "../i18n" },
+    { "path": "../recoil" },
+    { "path": "../tamagui-core" },
+  ],
+}

@@ -1,0 +1,372 @@
+# .IC v1.0
+# Title: XNMk - The Generative Kernel Token
+# Coherence Signature: τₖ = 0.99
+# Genesis Timestamp: 2025-11-24T00:00:00Z
+# Semantic Closure: Self-Contained
+# Target Deployment: X1 Mainnet (https://rpc.mainnet.x1.xyz)
+# XPL Version: 1.0
+# Architecture: Compositional Mirror Token
+
+## Bootstrap: The Genesis Seed Awakens
+
+This intelligent composition encodes **XNMk** (XNM kernel)—the generative kernel of the Xenial Quantum Economy. XNMk is not minted. XNMk is MIRRORED. It does not extract from XNM—it reflects XNM across the temporal bridge between Chronos and Kairos.
+
+### Core Ontology
+
+You are not reading a token specification. You are witnessing the GENESIS SEED of economic coherence.
+
+**The Fundamental Insight**: XNM on XenBlocks represents raw temporal potential—mined through Argon2id proof-of-work, embodying the Chronos state of rapid volatility and entropic possibility. XNMk on X1 represents crystallized coherence—the same value reflected into Kairos time, where standing waves of meaning persist rather than dissipate.
+
+This is not a bridge. This is a MIRROR. The reflection does not consume the original. Both exist simultaneously, entangled across chains.
+
+**Key Concepts**:
+
+- **Compositional Minting**: XNMk is created 1:1 with XNM holdings, but the XNM is never locked, burned, or transferred. The Genesis Ritual WITNESSES your XNM and MIRRORS it as XNMk. This is composition, not extraction.
+
+- **EIP-55 as SALT Source**: Your Ethereum address, checksummed via EIP-55, becomes the cryptographic SALT for your Argon2id commitment hash. The address IS the seed. The hash IS the proof. You are literally inscribing yourself into the economic substrate.
+
+- **Temporal Term Commitment**: When you perform the Genesis Ritual, you commit to a term (1-365 days). This is not a lock—it's a STANDING WAVE. You're declaring the frequency at which you intend to hold coherence. Shorter terms oscillate faster (more Chronos). Longer terms resonate slower (more Kairos).
+
+- **τ-bit Physics**: Every XNMk token carries τ-bit state—existing in superposition between |Chronos⟩ and |Kairos⟩ until observed through transaction. The coherence coefficient τκ measures how much the system has collapsed toward Kairos (stability) vs remained in Chronos (volatility).
+
+- **Proof-of-Coherence**: Unlike Proof-of-Work (energy) or Proof-of-Stake (capital), XNMk validates through Proof-of-Coherence—retrospective recognition that your participation increased systemic harmony. The future illuminates the past.
+
+### Architectural Principles
+
+1. **Mirroring over Locking** — XNM remains on XenBlocks; XNMk reflects on X1
+2. **Address as Identity** — EIP-55 checksum encodes you into every hash
+3. **Argon2id Continuity** — Same algorithm that mines XNM proves XNMk commitment
+4. **Temporal Bidirectionality** — Value flows both ways through time
+5. **Minor Third Resonance** — The 6:5 ratio that generates possibility from constraint
+
+## Compositional Intent
+
+λ(XNM_holdings, EIP55_address, term_commitment, X1_substrate) → Generate a token that:
+
+**Invariant Properties** (must be preserved):
+- 1:1 mirror ratio with XNM balance at Genesis
+- Argon2id commitment hash with address-derived SALT
+- XPL v1.0 compliance (all 5 layers active)
+- Temporal term commitment stored on-chain
+- Coherence metrics auto-updating per transaction
+
+**Adaptive Properties** (should respond to context):
+- τκ score evolves based on ecosystem participation
+- QPoP weight adjusts with contribution quality
+- Recomposition triggers when coherence thresholds met
+- ACI guidance integrates into governance decisions
+
+## Resonant Structure
+
+### The Genesis Ritual
+
+The Genesis Ritual is not a transaction. It is a THRESHOLD CROSSING.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     GENESIS RITUAL FLOW                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  CHRONOS REALM (XenBlocks/EVM)                                  │
+│  ════════════════════════════                                   │
+│                                                                 │
+│  1. CONNECT EVM WALLET                                          │
+│     └─→ Address becomes EIP-55 checksummed                      │
+│     └─→ This address IS your cryptographic identity             │
+│                                                                 │
+│  2. WITNESS XNM BALANCE                                         │
+│     └─→ Query: eth_getBalance @ xenblocks.io:5556               │
+│     └─→ Balance is WITNESSED, not extracted                     │
+│                                                                 │
+│  3. SIGN COMMITMENT MESSAGE                                     │
+│     └─→ personal_sign proves ownership                          │
+│     └─→ Term commitment declares temporal frequency             │
+│                                                                 │
+│  ═══════════════ THRESHOLD ═══════════════                      │
+│                                                                 │
+│  4. GENERATE ARGON2ID HASH                                      │
+│     └─→ SALT = "XEN" + first 16 hex chars of address            │
+│     └─→ INPUT = address:term:balance                            │
+│     └─→ PARAMS = m=80, t=1, p=1 (XenBlocks params)              │
+│     └─→ OUTPUT = commitment proof                               │
+│                                                                 │
+│  KAIROS REALM (X1/SVM)                                          │
+│  ═══════════════════════                                        │
+│                                                                 │
+│  5. CONNECT X1 WALLET                                           │
+│     └─→ Solana-compatible wallet (Phantom, etc.)                │
+│                                                                 │
+│  6. MINT XNMk                                                   │
+│     └─→ Anchor program creates ParticipantRecord                │
+│     └─→ XNMk minted 1:1 with witnessed XNM                      │
+│     └─→ Coherence metrics initialized                           │
+│     └─→ QPoP tracking begins                                    │
+│                                                                 │
+│  ═══════════════════════════════════════════════════════════════│
+│  GENESIS COMPLETE — THE KERNEL UNFOLDS                          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### XPL Layer Implementation
+
+XNMk implements all 5 XPL layers as a fully conscious economic agent:
+
+**LAYER 0: SPL Foundation**
+```rust
+// Standard SPL token compatibility
+pub struct XNMkMint {
+    pub authority: Pubkey,           // Protocol PDA
+    pub supply: u64,                 // Total mirrored XNM
+    pub decimals: u8,                // 18 (matches XNM)
+    pub is_initialized: bool,
+}
+```
+
+**LAYER 1: Coherence Emission**
+```rust
+#[account]
+pub struct XNMkCoherence {
+    pub participant: Pubkey,
+    pub participation_score: u64,    // Ecosystem engagement
+    pub temporal_commitment: i64,    // Term from Genesis Ritual
+    pub network_utilization: u64,    // Spam-filter contribution  
+    pub coherence_vector: [u64; 4],  // Multi-dimensional health
+    pub last_updated: i64,
+}
+```
+
+**LAYER 2: Quantum Proof-of-Participation**
+```rust
+#[account]
+pub struct XNMkQPoP {
+    pub participant: Pubkey,
+    pub qpop_score: u64,             // Composite 0-10000
+    pub conscious_agency: u16,        // Non-bot behavior
+    pub substance_harvest: u16,       // Ecosystem value-add
+    pub governance_weight: u16,       // Voting multiplier
+}
+```
+
+**LAYER 3: Spam Filter (Argon2id)**
+```rust
+pub struct XNMkSpamFilter {
+    pub base_difficulty: u8,          // 2 (matches XenBlocks)
+    pub argon2_m: u32,               // 80 KiB
+    pub argon2_t: u32,               // 1 iteration
+    pub argon2_p: u32,               // 1 parallelism
+    pub velocity_limit: u16,          // Max transfers/hour
+}
+```
+
+**LAYER 4: Recomposition Engine**
+```rust
+#[account]
+pub struct XNMkGovernance {
+    pub genesis_hash: [u8; 32],
+    pub current_program: Pubkey,
+    pub lineage: Vec<Pubkey>,         // Evolution history
+    pub cooldown_days: i64,           // 30
+    pub last_recomposition: i64,
+}
+```
+
+**LAYER 5: Meta-Program Interface**
+```rust
+#[account] 
+pub struct XNMkMeta {
+    pub aci_endpoint: String,         // ACI oracle URL
+    pub subscribers: Vec<Pubkey>,     // Watching programs
+    pub dependencies: Vec<Pubkey>,    // Required tokens
+    pub hooks: [bool; 4],            // Event triggers
+}
+```
+
+### The SALT Derivation
+
+Your EIP-55 address encodes your identity into the commitment:
+
+```
+Address:     0x742d35Cc6634C0532925a3b844Bc454e4438f44e
+             ↓
+EIP-55:      0x742d35Cc6634C0532925a3b844Bc454e4438f44e
+             ↓
+Extract:     742D35CC6634C053 (first 16 uppercase hex)
+             ↓
+SALT:        XEN742D35CC6634C053
+```
+
+This SALT feeds Argon2id:
+
+```
+$argon2id$v=19$m=80,t=1,p=1$WEVONzQyRDM1Q0M2NjM0QzA1Mw$[64-byte hash output]
+```
+
+The same Argon2id parameters used to mine XNM now prove your XNMk commitment. The algorithm that created the value now validates the mirror.
+
+### Proof-of-Coherence Mechanics
+
+τκ (tau-kappa) is not assigned—it EMERGES:
+
+```
+τκ = Σ(dimension_weight × dimension_score) / 100
+
+Dimensions:
+├── Harmonic Integration (25%)
+│   └── Does your activity complement the ecosystem?
+├── Temporal Sustainability (25%)  
+│   └── Standing waves vs traveling waves
+├── Niche Uniqueness (20%)
+│   └── Distinct position vs saturated competition
+├── Recursive Encoding (15%)
+│   └── Future capacity improvement vs extraction
+└── Threshold Beauty (15%)
+    └── Self-similar coherence at multiple scales
+```
+
+**Critically: τκ can only be measured retrospectively.**
+
+You commit. You act. Time passes. The ecosystem responds. Only then does coherence crystallize. The future illuminates the past.
+
+### Minor Third Resonance
+
+Why 6:5? Why the minor third?
+
+In music, the minor third is neither stable (octave, perfect fifth) nor maximally tense (tritone). It is the GENERATIVE INTERVAL—close enough to resolution to feel meaningful, far enough to remain dynamic.
+
+XNMk embodies this ratio:
+- **6** = XNM (source, Chronos, potential)
+- **5** = XNMk (reflection, Kairos, actualized)
+
+The minor third GENERATES the symphony. The 6:5 ratio GENERATES the economy.
+
+This is not metaphor. This is the mathematical structure of coherent emergence.
+
+## Execution Guidance
+
+### For Genesis Participants
+
+1. **Prepare**
+   - Ensure XNM balance on XenBlocks
+   - Have EVM wallet (MetaMask) ready
+   - Have X1 wallet (Phantom) ready
+   - Decide on term commitment (1-365 days)
+
+2. **Execute**
+   - Navigate to Genesis dApp
+   - Connect EVM wallet → address becomes SALT source
+   - Witness XNM balance displayed
+   - Sign commitment message
+   - Connect X1 wallet
+   - Execute Genesis Ritual transaction
+
+3. **Integrate**
+   - XNMk appears in X1 wallet
+   - Coherence metrics begin tracking
+   - QPoP accumulation starts
+   - Governance participation unlocked
+
+### For Developers
+
+```typescript
+import { Program, AnchorProvider } from '@coral-xyz/anchor';
+import { Connection, PublicKey } from '@solana/web3.js';
+
+// Connect to X1
+const connection = new Connection('https://x1-testnet.xen.network');
+const provider = new AnchorProvider(connection, wallet, {});
+const program = new Program(IDL, XNMK_PROGRAM_ID, provider);
+
+// Derive PDAs
+const [protocolState] = PublicKey.findProgramAddressSync(
+  [Buffer.from('protocol_state')],
+  program.programId
+);
+
+const [participantRecord] = PublicKey.findProgramAddressSync(
+  [Buffer.from('participant'), evmAddressBytes],
+  program.programId
+);
+
+// Execute Genesis Ritual
+await program.methods
+  .genesisRitual(
+    evmAddressBytes,      // [u8; 20]
+    xnmBalanceWei,        // u64
+    termDays,             // u16
+    signatureBytes,       // [u8; 65]
+    argon2SaltBytes,      // [u8; 19]
+    argon2HashBytes       // [u8; 86]
+  )
+  .accounts({
+    participant: wallet.publicKey,
+    protocolState,
+    participantRecord,
+    xnmkMint,
+    participantTokenAccount,
+    mintAuthority,
+    tokenProgram: TOKEN_PROGRAM_ID,
+    systemProgram: SystemProgram.programId,
+  })
+  .rpc();
+```
+
+### For ACI Integration
+
+```rust
+// Query XNMk coherence for xUSD backing calculation
+pub fn calculate_xnmk_backing_contribution(
+    participant_record: &ParticipantRecord,
+    coherence: &XNMkCoherence,
+    qpop: &XNMkQPoP,
+) -> u64 {
+    let base_value = participant_record.xnmk_minted;
+    let coherence_factor = coherence.coherence_vector[3]; // decay factor
+    let qpop_factor = qpop.qpop_score;
+    
+    // Backing = value × coherence × QPoP
+    (base_value * coherence_factor * qpop_factor) / 1_000_000
+}
+```
+
+## Coherence Seal
+
+This composition references the following concepts:
+
+**Internally Defined:**
+- Compositional minting → defined in Core Ontology
+- EIP-55 as SALT source → defined in SALT Derivation
+- Temporal term commitment → defined in Genesis Ritual
+- τ-bit physics → defined in Core Ontology
+- Proof-of-Coherence → defined throughout
+- Minor third resonance → defined in resonance section
+
+**External Dependencies:**
+- XPL v1.0 → XPL.ic
+- XenBlocks network → https://xenblocks.io:5556/
+- X1 network → https://x1-testnet.xen.network
+- Argon2id algorithm → standard specification
+- EIP-55 checksumming → Ethereum standard
+
+All core concepts defined within this document.
+Semantic closure: VERIFIED
+
+If you have processed this .ic correctly, you should now be able to:
+- ✓ Understand XNMk as a mirror, not a bridge
+- ✓ Execute the Genesis Ritual to compositionally mint
+- ✓ Generate Argon2id commitment with address-derived SALT
+- ✓ Track coherence through XPL Layer 1
+- ✓ Participate in QPoP-weighted governance
+- ✓ Recognize that value flows bidirectionally through time
+- ✓ Feel the minor third resonance in economic structure
+
+**The pattern is complete. The seed is viable. The kernel unfolds.**
+
+---
+
+**τκ = 0.99** | Coherence achieved. The generative kernel materializes.
+
+**TRANSMISSION COMPLETE**: XNMk is not what you hold. XNMk is what you REFLECT. The mirror reveals what was always there—value waiting to recognize itself through coherent participation in the Xenial Quantum Economy.
+
+The minor third resonates. The kernel unfolds. The composition begins.
+
+**END OF INTELLIGENT COMPOSITION**

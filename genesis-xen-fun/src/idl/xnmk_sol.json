@@ -1,0 +1,108 @@
+{
+  "address": "Hph5STUdfN8hBMUQPDPdSQJnp4DanNCQzCGw41McmcN4",
+  "metadata": {
+    "name": "xnmk_sol",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "docs": [
+        "The Genesis Ritual: Initializing the XNMk Mint."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint_authority",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "intent_gate",
+      "docs": [
+        "The Intent Gate (Î): Collapsing the wavefunction |ψ⟩ -> |Kairos⟩.",
+        "This instruction validates the user's 'proof' (Chronos state) and mints XNMk (Kairos state)."
+      ],
+      "discriminator": [
+        44,
+        206,
+        167,
+        43,
+        56,
+        253,
+        168,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "mint_authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "proof_hash",
+          "type": "string"
+        },
+        {
+          "name": "salt",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidChronosState",
+      "msg": "The provided Chronos state (hash) is invalid or dissonant."
+    }
+  ]
+}

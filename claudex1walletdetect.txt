@@ -1,0 +1,262 @@
+Current Implementation
+
+  The wallet currently uses a fixed limit approach:
+
+  - LOAD_PUBLIC_KEY_AMOUNT = 20 in @coral-xyz/common/dist/esm/constants.js
+  - The getRecoveryPaths() function in derivationPaths.ts generates only the first 20 derivation paths for each scheme
+  - When importing from seed phrase, it checks these 20 addresses and stops, regardless of whether they have activity
+
+  The Problem
+
+  If a user has wallets at indices beyond 20 (e.g., wallet #25), those won't be detected during recovery. This is especially problematic for users who:
+  - Used multiple wallets over time
+  - Deleted some early wallets but kept later ones
+  - Used the wallet across different devices with different derivation patterns
+
+  Proposed Solution: Gap-Limit Algorithm
+
+  Implement BIP-44 standard gap limit discovery that:
+
+  1. Starts at index 0 and derives addresses sequentially
+  2. Checks each address for activity (balance > 0 OR transaction count > 0)
+  3. Tracks consecutive empty addresses (the "gap")
+  4. Stops when gap limit is reached (typically 20 consecutive empty addresses)
+  5. Only adds wallets with activity to the import list
+
+  Implementation Plan
+
+  Here's the approach:
+
+  // New file: secure-background/src/store/KeyringStore/activityDetection.ts
+
+  import type { Blockchain } from "@coral-xyz/common";
+
+  // Gap limit following BIP-44 standard
+  const GAP_LIMIT = 20;
+  const MAX_ADDRESSES_TO_CHECK = 1000; // Safety limit
+
+  export interface AddressActivity {
+    address: string;
+    derivationPath: string;
+    hasActivity: boolean;
+    balance?: string;
+    transactionCount?: number;
+  }
+
+  export interface ActivityChecker {
+    checkActivity(address: string): Promise<{
+      hasActivity: boolean;
+      balance?: string;
+      transactionCount?: number;
+    }>;
+  }
+
+  /**
+   * Discovers all wallets with activity using gap-limit algorithm
+   */
+  export async function discoverActiveWallets(
+    blockchain: Blockchain,
+    mnemonic: string,
+    bip44CoinType: number,
+    activityChecker: ActivityChecker,
+    derivationScheme: 'standard' | 'legacy' = 'standard'
+  ): Promise<AddressActivity[]> {
+    const activeWallets: AddressActivity[] = [];
+    let consecutiveEmpty = 0;
+    let index = 0;
+
+    while (consecutiveEmpty < GAP_LIMIT && index < MAX_ADDRESSES_TO_CHECK) {
+      // Generate derivation path based on scheme
+      const derivationPath = getDerivationPath(
+        bip44CoinType,
+        index,
+        derivationScheme
+      );
+
+      // Derive address from mnemonic + path
+      const address = await deriveAddress(blockchain, mnemonic, derivationPath);
+
+      // Check for activity
+      const activity = await activityChecker.checkActivity(address);
+
+      if (activity.hasActivity) {
+        activeWallets.push({
+          address,
+          derivationPath,
+          hasActivity: true,
+          balance: activity.balance,
+          transactionCount: activity.transactionCount,
+        });
+        consecutiveEmpty = 0; // Reset gap counter
+      } else {
+        consecutiveEmpty++;
+      }
+
+      index++;
+    }
+
+    return activeWallets;
+  }
+
+  function getDerivationPath(
+    bip44CoinType: number,
+    index: number,
+    scheme: 'standard' | 'legacy'
+  ): string {
+    const HARDENING = 0x80000000;
+    const coinType = bip44CoinType + HARDENING;
+
+    if (scheme === 'standard') {
+      // m/44'/coinType'/0'/0'/index'
+      return `m/44'/${bip44CoinType}'/${0}'/${0}'/${index}'`;
+    } else {
+      // Legacy: m/44'/coinType'/index' or variations
+      return `m/44'/${bip44CoinType}'/${index}'`;
+    }
+  }
+
+  Integration Points
+
+  You'll need to implement ActivityChecker for each blockchain:
+
+  For Solana (services/svm/activityChecker.ts):
+  export class SolanaActivityChecker implements ActivityChecker {
+    constructor(private connection: Connection) {}
+
+    async checkActivity(address: string): Promise<{
+      hasActivity: boolean;
+      balance?: string;
+      transactionCount?: number;
+    }> {
+      try {
+        const pubkey = new PublicKey(address);
+
+        // Check balance
+        const balance = await this.connection.getBalance(pubkey);
+
+        // Check transaction history
+        const signatures = await this.connection.getSignaturesForAddress(
+          pubkey,
+          { limit: 1 }
+        );
+
+        const hasActivity = balance > 0 || signatures.length > 0;
+
+        return {
+          hasActivity,
+          balance: balance.toString(),
+          transactionCount: signatures.length,
+        };
+      } catch (error) {
+        console.error('Error checking Solana activity:', error);
+        return { hasActivity: false };
+      }
+    }
+  }
+
+  For Ethereum/EVM (services/evm/activityChecker.ts):
+  export class EthereumActivityChecker implements ActivityChecker {
+    constructor(private provider: JsonRpcProvider) {}
+
+    async checkActivity(address: string): Promise<{
+      hasActivity: boolean;
+      balance?: string;
+      transactionCount?: number;
+    }> {
+      try {
+        // Check balance
+        const balance = await this.provider.getBalance(address);
+
+        // Check transaction count (nonce)
+        const txCount = await this.provider.getTransactionCount(address);
+
+        const hasActivity = balance > 0n || txCount > 0;
+
+        return {
+          hasActivity,
+          balance: balance.toString(),
+          transactionCount: txCount,
+        };
+      } catch (error) {
+        console.error('Error checking Ethereum activity:', error);
+        return { hasActivity: false };
+      }
+    }
+  }
+
+  Update the Recovery Flow
+
+  Modify KeyringStore.ts to use the new discovery:
+
+  public async discoverWalletsFromSeed(
+    blockchain: Blockchain,
+    mnemonic: string
+  ): Promise<WalletDescriptor[]> {
+    const bip44CoinType = blockchain === 'solana' ? 501 : 60;
+
+    // Create activity checker
+    const activityChecker = blockchain === 'solana'
+      ? new SolanaActivityChecker(this.solanaConnection)
+      : new EthereumActivityChecker(this.ethereumProvider);
+
+    // Discover wallets for multiple schemes
+    const schemes = ['standard', 'legacy'] as const;
+    const allActiveWallets: AddressActivity[] = [];
+
+    for (const scheme of schemes) {
+      const wallets = await discoverActiveWallets(
+        blockchain,
+        mnemonic,
+        bip44CoinType,
+        activityChecker,
+        scheme
+      );
+      allActiveWallets.push(...wallets);
+    }
+
+    // Deduplicate by address
+    const uniqueWallets = deduplicateByAddress(allActiveWallets);
+
+    return uniqueWallets.map((w, idx) => ({
+      publicKey: w.address,
+      derivationPath: w.derivationPath,
+      name: `Wallet ${idx + 1}`,
+      blockchain,
+    }));
+  }
+
+  Benefits of This Approach
+
+  1. Complete Recovery: Finds ALL wallets with activity, not just first 20
+  2. Efficient: Stops after gap limit (doesn't check thousands unnecessarily)
+  3. BIP-44 Compliant: Follows standard wallet discovery protocol
+  4. User-Friendly: Only shows wallets that have been used
+  5. Multi-Scheme Support: Checks legacy and new derivation schemes
+
+  Performance Considerations
+
+  - Parallel Checking: Check multiple addresses concurrently (batch of 10-20)
+  - Caching: Cache results to avoid redundant RPC calls
+  - Progress Feedback: Show user "Discovering wallets... checked 47 addresses"
+  - Timeout: Set reasonable timeout if network is slow
+
+  Would you like me to implement this solution in your codebase? I can create the necessary files and integrate them with your existing wallet recovery flow.
+
+● I've identified the issue and provided a comprehensive solution. The key changes needed are:
+
+  Key Files to Modify:
+  1. @coral-xyz/common/src/constants.ts - Add gap limit constant
+  2. secure-background/src/store/KeyringStore/activityDetection.ts - NEW: Gap-limit discovery algorithm
+  3. secure-background/src/services/svm/activityChecker.ts - NEW: Solana activity checking
+  4. secure-background/src/services/evm/activityChecker.ts - NEW: Ethereum activity checking
+  5. secure-background/src/store/KeyringStore/KeyringStore.ts - Integrate discovery
+  6. secure-background/src/store/KeyringStore/derivationPaths.ts - Update path generation
+
+  Do you have access to the source code for this project? The files I'm seeing are compiled/minified. If you have the source repository, I can implement this solution directly. Otherwise, I can provide you with:
+
+  1. Complete implementation files to add to your source
+  2. Detailed integration instructions
+  3. Testing strategy to verify it works correctly
+
+  Which would you prefer?
+

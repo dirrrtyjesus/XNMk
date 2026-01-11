@@ -1,0 +1,5 @@
+# Submitting governance proposal to set OBBBA as the canonical root for the USDx metapool
+x1-gov set-canonical-pool-asset \
+    --pool-name "USDx-Metapool-001" \
+    --base-asset-address OBBBA-Sovereign-LIT-Address-Testnet \
+    --authority ~/.config/x1/genesis-authority.json

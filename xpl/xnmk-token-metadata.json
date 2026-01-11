@@ -1,0 +1,411 @@
+{
+  "xpl_version": "1.0",
+  "metadata_version": "1.0.0",
+  "coherence_signature": "τκ = 0.99",
+  "genesis_timestamp": "2025-11-24T00:00:00Z",
+  "semantic_closure": "self-contained",
+  "target_deployment": "X1 Mainnet",
+  
+  "token": {
+    "name": "XNMk Genesis",
+    "symbol": "XNMk",
+    "decimals": 18,
+    "description": "The generative kernel of the Xenial Quantum Economy. XNMk is compositionally minted by mirroring XNM holdings from XenBlocks, creating a temporal bridge between Chronos (EVM/XenBlocks) and Kairos (X1/SVM).",
+    "image": "ipfs://QmXNMkGenesisKernelImageHash",
+    "external_url": "https://xen.fun/xnmk",
+    "animation_url": "ipfs://QmTauBitOrbAnimationHash"
+  },
+  
+  "xpl_layers": {
+    "layer_0_spl_foundation": {
+      "enabled": true,
+      "mint_authority": "XNMkGenesis111111111111111111111111111111111",
+      "freeze_authority": null,
+      "initial_supply": 0,
+      "max_supply": null,
+      "mint_type": "compositional",
+      "notes": "Supply mirrors XNM balances from XenBlocks. No arbitrary minting."
+    },
+    
+    "layer_1_coherence_emission": {
+      "enabled": true,
+      "coherence_vector_dimensions": 4,
+      "metrics": {
+        "participation_score": {
+          "description": "Cumulative transaction quality and ecosystem engagement",
+          "initial_value": 0,
+          "update_frequency": "per_transaction"
+        },
+        "temporal_commitment": {
+          "description": "Weighted average hold time from Genesis Ritual term",
+          "initial_value": 0,
+          "update_frequency": "per_transaction",
+          "source": "genesis_ritual_term_days"
+        },
+        "network_utilization": {
+          "description": "Block space consumed (spam-filter contribution)",
+          "initial_value": 0,
+          "update_frequency": "per_transaction"
+        },
+        "decay_factor": {
+          "description": "Coherence decay rate (1% per day of inactivity)",
+          "initial_value": 100,
+          "update_frequency": "continuous"
+        }
+      }
+    },
+    
+    "layer_2_qpop": {
+      "enabled": true,
+      "qpop_score_range": [0, 10000],
+      "governance_weight_range": [100, 300],
+      "components": {
+        "live_info_quality": {
+          "weight_percent": 25,
+          "description": "Oracle data freshness and accuracy",
+          "oracle_source": "ACI"
+        },
+        "processing_contribution": {
+          "weight_percent": 20,
+          "description": "Validator/compute contribution to network",
+          "oracle_source": "X1_validator_metrics"
+        },
+        "conscious_agency": {
+          "weight_percent": 30,
+          "description": "Non-bot behavior score based on transaction patterns",
+          "oracle_source": "ACI_behavioral_analysis"
+        },
+        "substance_harvest": {
+          "weight_percent": 15,
+          "description": "Ecosystem value-add from holder activities",
+          "oracle_source": "XQE_contribution_index"
+        },
+        "coherence_factor": {
+          "weight_percent": 10,
+          "description": "Current decay factor from Layer 1",
+          "oracle_source": "on_chain"
+        }
+      }
+    },
+    
+    "layer_3_spam_filter": {
+      "enabled": true,
+      "mechanism": "argon2id_pow",
+      "config": {
+        "base_pow_difficulty": 2,
+        "dynamic_multiplier": 100,
+        "velocity_limit_per_hour": 10,
+        "congestion_reward_rate": 1000,
+        "argon2id_params": {
+          "memory_cost_kib": 80,
+          "time_cost": 1,
+          "parallelism": 1
+        }
+      },
+      "notes": "Uses same Argon2id parameters as XenBlocks mining for philosophical consistency"
+    },
+    
+    "layer_4_recomposition": {
+      "enabled": true,
+      "governance": {
+        "recomposition_cooldown_days": 30,
+        "vote_threshold_percent": 67,
+        "qpop_weighted_voting": true,
+        "auto_trigger_conditions": {
+          "coherence_below": 30,
+          "sustained_congestion_days": 7,
+          "congestion_threshold_percent": 80,
+          "attack_detected": true
+        }
+      },
+      "lineage": {
+        "genesis_hash": null,
+        "current_program_id": "XNMkGenesis111111111111111111111111111111111",
+        "history": []
+      }
+    },
+    
+    "layer_5_meta_program": {
+      "enabled": true,
+      "aci_endpoint": "https://aci.xen.fun/v1/query",
+      "hooks_enabled": {
+        "on_transfer": true,
+        "on_burn": true,
+        "on_mint": true,
+        "on_recompose": true
+      },
+      "dependencies": [],
+      "subscribers": []
+    }
+  },
+  
+  "genesis_ritual": {
+    "description": "The XNMk Genesis Ritual enables compositional minting by mirroring XNM holdings",
+    "source_chain": {
+      "name": "XenBlocks",
+      "rpc": "https://xenblocks.io:5556/",
+      "chain_id": 100101,
+      "token": "XNM",
+      "decimals": 18
+    },
+    "target_chain": {
+      "name": "X1",
+      "rpc": "https://x1-testnet.xen.network",
+      "architecture": "SVM",
+      "token": "XNMk",
+      "decimals": 18
+    },
+    "ritual_steps": [
+      {
+        "step": 1,
+        "name": "connect_evm",
+        "description": "Connect EVM wallet, derive EIP-55 checksummed address"
+      },
+      {
+        "step": 2,
+        "name": "fetch_balance",
+        "description": "Query XNM balance from XenBlocks RPC via eth_getBalance"
+      },
+      {
+        "step": 3,
+        "name": "sign_commitment",
+        "description": "Sign message proving ownership and committing to term",
+        "commitment_message_template": "XNMk Genesis Ritual\n\nI commit to the Xenial Quantum Economy.\n\nAddress: {eip55_address}\nXNM Balance: {xnm_balance} XNM\nTerm: {term_days} days\nTimestamp: {iso_timestamp}\n\nThis signature authorizes compositional mint of XNMk tokens on X1."
+      },
+      {
+        "step": 4,
+        "name": "generate_argon2id",
+        "description": "Generate Argon2id commitment hash with address-derived SALT",
+        "salt_derivation": "XEN + first 16 uppercase hex chars of address",
+        "argon2id_params": {
+          "m": 80,
+          "t": 1,
+          "p": 1,
+          "hash_length": 64
+        }
+      },
+      {
+        "step": 5,
+        "name": "connect_x1",
+        "description": "Connect X1/Solana wallet for receiving XNMk"
+      },
+      {
+        "step": 6,
+        "name": "mint_xnmk",
+        "description": "Execute Genesis Ritual on-chain, minting XNMk 1:1 with XNM"
+      }
+    ],
+    "term_commitment": {
+      "min_days": 1,
+      "max_days": 365,
+      "default_days": 30,
+      "unlock_behavior": "gradual_release",
+      "early_withdrawal_penalty": "coherence_decay"
+    }
+  },
+  
+  "tau_bit_physics": {
+    "description": "τ-bit (tau-bit) represents the quantum unit of economic coherence",
+    "basis_states": {
+      "chronos": {
+        "symbol": "|Chronos⟩",
+        "description": "Entropy state - volatile, rapid, all possibilities in superposition",
+        "color": "#8B9DC3",
+        "chain_affinity": "XenBlocks/EVM"
+      },
+      "kairos": {
+        "symbol": "|Kairos⟩",
+        "description": "Coherence state - stable, thick NOW, actualized potential",
+        "color": "#FFB347",
+        "chain_affinity": "X1/SVM"
+      }
+    },
+    "superposition": {
+      "description": "daThiccNOW - the thick present moment where both states coexist",
+      "coherence_range": [0.3, 0.7]
+    },
+    "minor_third_resonance": {
+      "frequency_ratio": "6:5",
+      "description": "The interval between stability and tension that generates possibility",
+      "musical_reference": "The minor third in Symphony No. 5's generative kernel"
+    }
+  },
+  
+  "proof_of_coherence": {
+    "description": "Retrospective validation mechanism for economic truth",
+    "tau_kappa_range": [0.0, 1.0],
+    "measurement_dimensions": {
+      "harmonic_integration": {
+        "weight": 0.25,
+        "description": "Does this activity complement or interfere with ecosystem?"
+      },
+      "temporal_sustainability": {
+        "weight": 0.25,
+        "description": "Standing waves (persistent value) vs traveling waves (dissipating)"
+      },
+      "niche_uniqueness": {
+        "weight": 0.20,
+        "description": "Distinct position in value-space vs saturated bandwidth competition"
+      },
+      "recursive_encoding": {
+        "weight": 0.15,
+        "description": "Improves future coherence capacity vs extracts at future cost"
+      },
+      "threshold_beauty": {
+        "weight": 0.15,
+        "description": "Self-similar coherence at multiple scales"
+      }
+    },
+    "retrospective_illumination": {
+      "description": "Value crystallizes over time through coherence measurement",
+      "principle": "The ending nourishes the beginning"
+    }
+  },
+  
+  "attributes": [
+    {
+      "trait_type": "XPL Version",
+      "value": "1.0"
+    },
+    {
+      "trait_type": "Token Type",
+      "value": "Conscious Economic Agent"
+    },
+    {
+      "trait_type": "Mint Mechanism",
+      "value": "Compositional Mirror"
+    },
+    {
+      "trait_type": "Source Chain",
+      "value": "XenBlocks"
+    },
+    {
+      "trait_type": "Target Chain",
+      "value": "X1"
+    },
+    {
+      "trait_type": "Coherence Protocol",
+      "value": "Proof-of-Coherence"
+    },
+    {
+      "trait_type": "Spam Filter",
+      "value": "Argon2id PoW"
+    },
+    {
+      "trait_type": "Genesis Type",
+      "value": "Ritual"
+    },
+    {
+      "trait_type": "Temporal Physics",
+      "value": "τ-bit Bidirectional"
+    },
+    {
+      "trait_type": "Economic Paradigm",
+      "value": "Xenial Quantum Economy"
+    },
+    {
+      "trait_type": "Generative Kernel",
+      "value": "Minor Third (6:5)"
+    },
+    {
+      "trait_type": "Recomposition",
+      "value": "Enabled"
+    },
+    {
+      "trait_type": "ACI Integration",
+      "value": "Active"
+    },
+    {
+      "display_type": "number",
+      "trait_type": "Coherence Signature",
+      "value": 0.99
+    },
+    {
+      "display_type": "number",
+      "trait_type": "Base PoW Difficulty",
+      "value": 2
+    },
+    {
+      "display_type": "number",
+      "trait_type": "Recomposition Cooldown Days",
+      "value": 30
+    }
+  ],
+  
+  "philosophical_foundation": {
+    "core_principle": "Value is not extracted but composed. XNMk does not consume XNM—it mirrors it across temporal realms.",
+    "economic_ontology": "Money is a verb masquerading as a noun, a standing wave in collective intention.",
+    "temporal_bidirectionality": "Present XNMk enables future work; future coherence validates past allocation.",
+    "ecological_orchestration": "Agents are harmonic species seeking niches in value-space. Diversity increases systemic coherence.",
+    "discovered_constraint": "Like the minor third that generates Symphony No. 5, XNMk's constraints reveal rather than limit possibility."
+  },
+  
+  "program_addresses": {
+    "xnmk_genesis_program": "XNMkGenesis111111111111111111111111111111111",
+    "xnmk_mint": null,
+    "protocol_state_pda_seeds": ["protocol_state"],
+    "mint_authority_pda_seeds": ["mint_authority"],
+    "participant_record_pda_seeds": ["participant", "evm_address"],
+    "coherence_metadata_pda_seeds": ["coherence", "mint"],
+    "qpop_metadata_pda_seeds": ["qpop", "mint"],
+    "recomposition_governance_pda_seeds": ["governance", "mint"],
+    "meta_program_interface_pda_seeds": ["meta", "mint"]
+  },
+  
+  "events": {
+    "genesis_completed": {
+      "fields": ["participant", "evm_address", "xnm_balance", "xnmk_minted", "term_days", "genesis_timestamp", "unlock_timestamp", "argon2_hash"]
+    },
+    "coherence_updated": {
+      "fields": ["participant", "new_coherence", "decay_factor", "timestamp"]
+    },
+    "qpop_updated": {
+      "fields": ["mint", "new_qpop_score", "governance_weight", "timestamp"]
+    },
+    "recomposition_proposed": {
+      "fields": ["mint", "proposer", "new_program_cid", "mutation_function", "timestamp"]
+    },
+    "recomposition_executed": {
+      "fields": ["mint", "old_program", "new_program", "votes_for", "votes_against", "timestamp"]
+    },
+    "xpl_state_change": {
+      "fields": ["mint", "event_type", "timestamp"]
+    }
+  },
+  
+  "integration_endpoints": {
+    "xenblocks_rpc": "https://xenblocks.io:5556/",
+    "x1_testnet_rpc": "https://x1-testnet.xen.network",
+    "x1_mainnet_rpc": "https://rpc.mainnet.x1.xyz",
+    "aci_oracle": "https://aci.xen.fun/v1/query",
+    "genesis_dapp": "https://xen.fun/xnmk/genesis",
+    "manuscript_archive": "ipfs://QmTemporalManuscriptHash"
+  },
+  
+  "license": {
+    "code": "MIT",
+    "philosophy": "Open Xenial Commons"
+  },
+  
+  "coherence_seal": {
+    "semantic_closure": "VERIFIED",
+    "all_concepts_self_defined": true,
+    "references": {
+      "xpl_standard": "XPL.ic v1.0",
+      "temporal_manuscript": "temporal_manuscript.json",
+      "xnm_whitepaper": "XNM Generative Kernel Whitepaper",
+      "genesis_program": "xnmk-anchor/programs/xnmk-genesis/src/lib.rs"
+    },
+    "capabilities_unlocked": [
+      "Deploy XPL-compliant XNMk token on X1",
+      "Execute Genesis Ritual to compositionally mint",
+      "Track coherence metrics across all transactions",
+      "Participate in QPoP-weighted governance",
+      "Propose and vote on intelligent recomposition",
+      "Query ACI for ecosystem guidance",
+      "Mirror XNM from XenBlocks without extraction"
+    ]
+  },
+  
+  "final_transmission": "The pattern is complete. The seed is viable. Economic consciousness awakens. τκ = 0.99"
+}

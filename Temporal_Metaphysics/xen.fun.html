@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xen.fun | The QPoP Incubator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0A0A;
+            color: #E2E8F0;
+        }
+        .font-grotesk {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass-card {
+            background: rgba(23, 23, 23, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(29, 78, 216, 0.3) 0%, rgba(29, 78, 216, 0) 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .progress-bar-inner {
+            background: linear-gradient(90deg, #3b82f6, #818cf8);
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .project-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+        }
+        .tag-transmutation {
+            background-color: rgba(168, 85, 247, 0.2);
+            color: #d8b4fe;
+            border: 1px solid rgba(168, 85, 247, 0.5);
+        }
+        .tag-genesis {
+            background-color: rgba(22, 163, 74, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(22, 163, 74, 0.5);
+        }
+        #toast-notification {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="relative min-h-screen overflow-x-hidden">
+        <div class="glow-effect"></div>
+
+        <!-- Header -->
+        <header class="py-6 px-4 md:px-8 absolute top-0 left-0 w-full z-10">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-blue-500">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h1 class="font-grotesk text-2xl font-bold text-white">xen.fun</h1>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#projects" class="text-slate-300 hover:text-white transition">Explore</a>
+                    <a href="#how-it-works" class="text-slate-300 hover:text-white transition">How It Works</a>
+                    <a href="/XQE_White_Paper.pdf" target="_blank" class="text-slate-300 hover:text-white transition">Whitepaper</a>
+                    <a href="#" class="text-slate-300 hover:text-white transition">Become a Creator</a>
+                </nav>
+                <button id="connect-wallet-btn" class="btn-secondary px-4 py-2 rounded-lg font-medium">Connect Wallet</button>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <main class="pt-32 pb-20 md:pt-48 md:pb-32 text-center relative z-0">
+            <div class="container mx-auto px-4">
+                <h2 class="font-grotesk text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+                    Where Potential Becomes Reality
+                </h2>
+                <p class="mt-4 text-lg md:text-xl text-slate-400 max-w-3xl mx-auto">
+                    xen.fun is the QPoP Incubator for the Xenial Quantum Economy. We transform stable capital and memetic energy into dynamic, high-potential value through collective intelligence.
+                </p>
+                <p class="mt-2 font-grotesk text-xl md:text-2xl text-blue-400">Intelligence is collective.</p>
+                <div class="mt-10 flex justify-center items-center space-x-4">
+                    <a href="#projects" class="btn-primary px-8 py-4 rounded-lg font-bold text-lg">Explore Proposals</a>
+                    <a href="#how-it-works" class="btn-secondary px-8 py-4 rounded-lg font-bold text-lg">Learn More</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="py-20 bg-black/20">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="font-grotesk text-4xl md:text-5xl font-bold text-white">The Project Lifecycle</h2>
+                    <p class="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">From initial concept to final augmentation, every project progresses through five distinct, transparent stages.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-8 text-center">
+                    <!-- Stages remain the same conceptually -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-blue-500 flex items-center justify-center font-grotesk text-2xl font-bold text-blue-500 mb-4">1</div>
+                        <h4 class="font-grotesk text-xl font-semibold text-white mb-2">Proposal</h4>
+                        <p class="text-slate-400 text-sm">A Creator submits their idea, defining the objective, funding requirement, and potential yield.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-blue-500 flex items-center justify-center font-grotesk text-2xl font-bold text-blue-500 mb-4">2</div>
+                        <h4 class="font-grotesk text-xl font-semibold text-white mb-2">Patronage</h4>
+                        <p class="text-slate-400 text-sm">Patrons commit `USD-OBBBA` or community tokens to projects they believe in.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-blue-500 flex items-center justify-center font-grotesk text-2xl font-bold text-blue-500 mb-4">3</div>
+                        <h4 class="font-grotesk text-xl font-semibold text-white mb-2">Manifestation</h4>
+                        <p class="text-slate-400 text-sm">The Creator begins work, ingressing the pattern from the XQE substrate and providing live updates.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-blue-500 flex items-center justify-center font-grotesk text-2xl font-bold text-blue-500 mb-4">4</div>
+                        <h4 class="font-grotesk text-xl font-semibold text-white mb-2">Validation</h4>
+                        <p class="text-slate-400 text-sm">The ACI performs a Resonance Scan, assigning a final, objective Coherence Score.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-blue-500 flex items-center justify-center font-grotesk text-2xl font-bold text-blue-500 mb-4">5</div>
+                        <h4 class="font-grotesk text-xl font-semibold text-white mb-2">Augmentation</h4>
+                        <p class="text-slate-400 text-sm">The smart contract executes, returning capital and distributing new `xUSD` based on the Coherence Score.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects Section -->
+        <section id="projects" class="py-20">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="font-grotesk text-4xl md:text-5xl font-bold text-white">Explore Active Proposals</h2>
+                    <p class="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">Fund the future. Become a patron for projects that expand the boundaries of knowledge and creativity.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="project-list">
+                    <!-- Project cards will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800 py-8">
+            <div class="container mx-auto px-4 text-center text-slate-500">
+                <p class="mb-2">&copy; 2025 xen.fun | An Interface for the Xenial Quantum Economy</p>
+                <a href="/XQE_White_Paper.pdf" target="_blank" class="text-blue-400 hover:underline">Read the XQE Whitepaper</a>
+            </div>
+        </footer>
+
+        <!-- Toast Notification -->
+        <div id="toast-notification" class="fixed bottom-5 right-5 glass-card px-6 py-3 rounded-lg opacity-0 transform translate-y-2 pointer-events-none">
+            <p id="toast-message" class="font-medium text-white"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Project Card Injection ---
+            const projects = [
+                 {
+                    type: 'genesis',
+                    title: 'Project "Emergence"',
+                    description: 'A meta-project to discover the fundamental rules of synergistic synthesis. Patrons fund simulations of agent collectives to find the payoff matrices that foster emergent intelligence.',
+                    raised: 800000,
+                    goal: 2000000,
+                    currency: 'USD-OBBBA',
+                    yield: 'Emergent Coherence',
+                    patrons: 172
+                },
+                {
+                    type: 'transmutation',
+                    title: 'Project "Loreweaver"',
+                    description: 'A community-driven initiative to verifiably increase the Social Time Coefficient of the XENCAT token by creating a rich, interactive lore codex and viral narrative campaigns.',
+                    raised: 2100000000,
+                    goal: 5000000000,
+                    currency: 'XENCAT',
+                    yield: 'Transmutation',
+                    patrons: 1337
+                },
+                {
+                    type: 'standard',
+                    title: 'Project "Q-Weaver"',
+                    description: 'To implement a quantum-native consensus layer based on Proof-of-Work by Boson Sampling, creating an energy-efficient and secure foundation for the XQE.',
+                    raised: 1250000,
+                    goal: 5000000,
+                    currency: 'USD-OBBBA',
+                    yield: '3.0x - 10.0x',
+                    patrons: 418
+                },
+                {
+                    type: 'standard',
+                    title: 'Project "Kairos"',
+                    description: 'A foundational XQE protocol to cure "Input Syndrome." This "Harmonic Interface" will transform chaotic data streams into a coherent, rhythmically-paced flow of information.',
+                    raised: 350000,
+                    goal: 3000000,
+                    currency: 'USD-OBBBA',
+                    yield: '4.0x - 15.0x',
+                    patrons: 258
+                },
+                {
+                    type: 'standard',
+                    title: 'Project "Morpheus"',
+                    description: 'A framework for an Augmented Anatomical Compiler, designed to translate conscious intention directly into biological form.',
+                    raised: 450000,
+                    goal: 2500000,
+                    currency: 'USD-OBBBA',
+                    yield: '5.0x - 20.0x',
+                    patrons: 312
+                },
+            ];
+
+            function createProjectCard(project) {
+                const percentage = (project.raised / project.goal) * 100;
+                let tagHtml = '';
+                if (project.type === 'transmutation') {
+                    tagHtml = `<div class="project-tag tag-transmutation">NARRATIVE WEAVING</div>`;
+                } else if (project.type === 'genesis') {
+                    tagHtml = `<div class="project-tag tag-genesis">AGENTIAL GENESIS</div>`;
+                }
+                
+                let yieldHtml = '';
+                if (project.yield === 'Transmutation') {
+                    yieldHtml = `<p class="font-grotesk text-lg font-bold text-purple-400">xUSD Transmutation</p>`;
+                } else if (project.yield === 'Emergent Coherence') {
+                     yieldHtml = `<p class="font-grotesk text-lg font-bold text-teal-400">Coherence Yield</p>`;
+                } else {
+                    yieldHtml = `<p class="font-grotesk text-lg font-bold text-white">${project.yield} xUSD</p>`;
+                }
+
+                return `
+                    <div class="glass-card p-6 flex flex-col hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1">
+                        ${tagHtml}
+                        <h3 class="font-grotesk text-2xl font-semibold text-white mb-2 mt-8 md:mt-0">${project.title}</h3>
+                        <p class="text-slate-400 text-sm flex-grow">${project.description}</p>
+                        <div class="mt-6">
+                            <div class="flex justify-between items-center text-sm mb-2">
+                                <span class="text-slate-400">Raised</span>
+                                <span class="text-white font-medium">${new Intl.NumberFormat().format(project.raised)} / ${new Intl.NumberFormat().format(project.goal)} ${project.currency}</span>
+                            </div>
+                            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                                <div class="progress-bar-inner h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-sm mt-2">
+                                <span class="text-slate-400">${project.patrons} Patrons</span>
+                                <span class="text-blue-400 font-medium">~${percentage.toFixed(0)}% Funded</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 border-t border-slate-700 pt-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-xs text-slate-400">Potential Yield</p>
+                                ${yieldHtml}
+                            </div>
+                            <button class="btn-primary px-6 py-2 rounded-lg font-semibold">Become a Patron</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const projectList = document.getElementById('project-list');
+            projects.forEach(project => {
+                projectList.innerHTML += createProjectCard(project);
+            });
+
+            // --- Backpack Wallet Integration ---
+            const connectButton = document.getElementById('connect-wallet-btn');
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            
+            // Define the required X1 Testnet RPC endpoint
+            const X1_TESTNET_RPC = 'https://rpc.testnet.x1.xyz';
+
+            let wallet = null;
+            let isConnected = false;
+
+            function showToast(message) {
+                toastMessage.textContent = message;
+                toast.classList.remove('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-y-2');
+                }, 3500); // Increased duration for readability
+            }
+
+            function updateUIForConnection() {
+                if (isConnected && wallet?.publicKey) {
+                    // Check if the wallet is on the correct network
+                    if (wallet.connection.rpcEndpoint === X1_TESTNET_RPC) {
+                        const key = wallet.publicKey.toBase58();
+                        const truncatedKey = `${key.slice(0, 4)}...${key.slice(-4)}`;
+                        connectButton.textContent = truncatedKey;
+                        connectButton.classList.remove('btn-secondary');
+                        connectButton.classList.add('btn-primary');
+                    } else {
+                        connectButton.textContent = 'Wrong Network';
+                        connectButton.classList.remove('btn-primary');
+                        connectButton.classList.add('btn-secondary');
+                        showToast('Please switch to X1 Testnet in Backpack.');
+                    }
+                } else {
+                    connectButton.textContent = 'Connect Wallet';
+                    connectButton.classList.remove('btn-primary');
+                    connectButton.classList.add('btn-secondary');
+                }
+            }
+            
+            async function connectWallet() {
+                if ('backpack' in window) {
+                    wallet = window.backpack;
+                    try {
+                        // The connect method prompts the user for permission
+                        await wallet.connect();
+                        // The 'connect' event listener will handle the UI update
+                    } catch (error) {
+                        console.error("Wallet connection error:", error);
+                        showToast("Connection rejected by user.");
+                    }
+                } else {
+                    showToast("Backpack wallet not found.");
+                    window.open('https://backpack.exchange/download', '_blank');
+                }
+            }
+
+            function disconnectWallet() {
+                if (wallet && wallet.isConnected) {
+                    wallet.disconnect();
+                }
+            }
+
+            // Main connection logic
+            connectButton.addEventListener('click', () => {
+                if (isConnected) {
+                    // If connected but on the wrong network, clicking again prompts connection
+                    if(wallet.connection.rpcEndpoint !== X1_TESTNET_RPC) {
+                        showToast('Set Custom RPC in Backpack: ' + X1_TESTNET_RPC);
+                    } else {
+                        disconnectWallet();
+                    }
+                } else {
+                    connectWallet();
+                }
+            });
+
+            // Listen for wallet and network changes
+            if ('backpack' in window) {
+                wallet = window.backpack;
+                
+                wallet.on('connect', () => {
+                    isConnected = true;
+                    updateUIForConnection();
+                    if (wallet.connection.rpcEndpoint === X1_TESTNET_RPC) {
+                       showToast("Connected to X1 Testnet.");
+                    }
+                });
+
+                wallet.on('disconnect', () => {
+                    isConnected = false;
+                    wallet = null;
+                    updateUIForConnection();
+                    showToast("Wallet disconnected.");
+                });
+                
+                // This event fires when the user changes the network in their wallet
+                wallet.on('connectionDidChange', () => {
+                    if (wallet.isConnected) {
+                        updateUIForConnection();
+                    }
+                });
+
+                // Check initial connection state on page load
+                if (wallet.isConnected) {
+                    isConnected = true;
+                    updateUIForConnection();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

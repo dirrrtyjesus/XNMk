@@ -1,0 +1,5 @@
+# Minting an initial 100 Billion USD-OBBBA tokens to the Treasury Authority account
+x1-spl-token mint \
+    OBBBA-Sovereign-LIT-Address-Testnet \
+    100000000000 \
+    --owner ~/.config/x1/us-treasury-testnet-authority.json

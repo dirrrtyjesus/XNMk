@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XNMk Genesis | Xenial Quantum Economy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --gold: #FFB347;
+      --gold-light: #FFD090;
+      --gold-dark: #FF8C00;
+      --blue: #8BC4FF;
+      --purple: #C4A4FF;
+      --teal: #4A7C7B;
+      --green: #90D090;
+      --red: #FF6B6B;
+      --bg-dark: #0a0c14;
+      --bg-mid: #12151f;
+      --text: #E0E8F0;
+      --text-dim: rgba(180, 190, 210, 0.7);
+      --text-muted: rgba(150, 160, 180, 0.6);
+    }
+    
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+      background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-mid) 50%, #0d1018 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .bg-texture {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(ellipse at 20% 20%, rgba(255, 180, 80, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(100, 140, 200, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(180, 140, 255, 0.02) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(20px);
+      background: rgba(10, 12, 20, 0.85);
+      border-bottom: 1px solid rgba(255, 180, 80, 0.1);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .logo h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--gold-light);
+      letter-spacing: 0.15em;
+    }
+    
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      background: rgba(40, 50, 70, 0.4);
+      border-radius: 4px;
+    }
+    
+    nav {
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      background: rgba(20, 25, 40, 0.8);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 180, 80, 0.1);
+    }
+    
+    nav button {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.03em;
+    }
+    
+    nav button.active {
+      background: linear-gradient(135deg, rgba(255, 180, 80, 0.2), rgba(255, 140, 60, 0.1));
+      color: var(--gold-light);
+    }
+    
+    nav button:hover:not(.active) { color: var(--text); }
+    
+    .wallets {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .wallet-btn {
+      padding: 8px 16px;
+      background: rgba(30, 40, 60, 0.6);
+      border: 1px solid rgba(100, 120, 140, 0.3);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .wallet-btn:hover:not(.connected) {
+      border-color: rgba(255, 180, 80, 0.3);
+    }
+    
+    .wallet-btn.connected {
+      background: linear-gradient(135deg, rgba(80, 180, 100, 0.15), rgba(60, 140, 80, 0.1));
+      border-color: rgba(80, 180, 100, 0.3);
+      color: var(--green);
+    }
+    
+    .wallet-btn.connected-x1 {
+      background: linear-gradient(135deg, rgba(139, 196, 255, 0.15), rgba(100, 140, 200, 0.1));
+      border-color: rgba(139, 196, 255, 0.3);
+      color: var(--blue);
+    }
+    
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    /* Genesis Tab Styles */
+    .genesis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    
+    @media (max-width: 900px) {
+      .genesis-grid { grid-template-columns: 1fr; }
+    }
+    
+    .orb-container { text-align: center; }
+    
+    .orb-wrapper {
+      display: inline-block;
+      padding: 40px;
+      background: radial-gradient(circle at center, rgba(30, 35, 50, 0.6) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .coherence-display { margin-top: 32px; }
+    
+    .coherence-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 8px;
+    }
+    
+    .coherence-value {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 56px;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      transition: color 0.3s ease;
+    }
+    
+    .coherence-state {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-top: 8px;
+    }
+    
+    .ritual-panel {
+      background: linear-gradient(180deg, rgba(20, 25, 40, 0.95) 0%, rgba(15, 18, 28, 0.98) 100%);
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid rgba(255, 180, 80, 0.15);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+    
+    .ritual-panel h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--gold-light);
+      margin-bottom: 16px;
+    }
+    
+    .progress-steps {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    
+    .progress-step {
+      flex: 1;
+      padding: 10px;
+      background: rgba(30, 40, 60, 0.3);
+      border-radius: 6px;
+      border: 1px solid rgba(100, 120, 140, 0.2);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .progress-step.active {
+      background: linear-gradient(135deg, rgba(255, 180, 80, 0.2), rgba(255, 140, 60, 0.1));
+      border-color: rgba(255, 180, 80, 0.3);
+    }
+    
+    .progress-step.complete {
+      background: linear-gradient(135deg, rgba(80, 180, 100, 0.2), rgba(60, 140, 80, 0.1));
+      border-color: rgba(80, 180, 100, 0.3);
+    }
+    
+    .progress-step-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    
+    .progress-step.active .progress-step-label { color: var(--gold); }
+    .progress-step.complete .progress-step-label { color: var(--green); }
+    
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+    
+    .info-box {
+      background: rgba(30, 40, 60, 0.4);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(100, 120, 140, 0.2);
+    }
+    
+    .info-box.highlight {
+      background: linear-gradient(135deg, rgba(139, 196, 255, 0.1), rgba(100, 140, 200, 0.05));
+      border-color: rgba(139, 196, 255, 0.2);
+      text-align: center;
+    }
+    
+    .info-box-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    
+    .info-box-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--gold);
+      word-break: break-all;
+    }
+    
+    .info-box-value.large {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--blue);
+    }
+    
+    .term-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(60, 70, 90, 0.5);
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin: 8px 0;
+    }
+    
+    .term-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--gold);
+      cursor: pointer;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #1a1a2e;
+      box-shadow: 0 4px 20px rgba(255, 140, 0, 0.3);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--purple), #9B7FD9);
+      color: #1a1a2e;
+    }
+    
+    .btn:disabled {
+      background: linear-gradient(135deg, #4A5568, #2D3748);
+      color: var(--text-dim);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    
+    /* Manuscript Tab Styles */
+    .manuscript-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 32px;
+      min-height: 70vh;
+    }
+    
+    @media (max-width: 900px) {
+      .manuscript-container { grid-template-columns: 1fr; }
+    }
+    
+    .manuscript-list {
+      background: rgba(20, 25, 40, 0.8);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(180, 140, 255, 0.15);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .manuscript-list h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--purple);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(180, 140, 255, 0.2);
+    }
+    
+    .composition-item {
+      padding: 12px;
+      background: rgba(30, 40, 60, 0.3);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    
+    .composition-item:hover {
+      background: rgba(40, 50, 70, 0.5);
+      border-color: rgba(180, 140, 255, 0.2);
+    }
+    
+    .composition-item.active {
+      background: linear-gradient(135deg, rgba(180, 140, 255, 0.15), rgba(140, 100, 200, 0.1));
+      border-color: rgba(180, 140, 255, 0.3);
+    }
+    
+    .composition-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    
+    .composition-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    
+    .composition-tau {
+      color: var(--gold);
+    }
+    
+    .manuscript-viewer {
+      background: rgba(15, 18, 28, 0.9);
+      border-radius: 12px;
+      padding: 32px;
+      border: 1px solid rgba(255, 180, 80, 0.1);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .manuscript-viewer h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    
+    .manuscript-prompt {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text-dim);
+      font-style: italic;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 180, 80, 0.1);
+    }
+    
+    .manuscript-content {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+    
+    .manuscript-content h1, .manuscript-content h2, .manuscript-content h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: var(--gold-light);
+      margin: 24px 0 12px;
+    }
+    
+    .manuscript-placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    
+    .manuscript-placeholder .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    /* Compositions Tab */
+    .ic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    
+    .ic-card {
+      background: linear-gradient(135deg, rgba(30, 35, 50, 0.6), rgba(25, 30, 45, 0.4));
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(180, 140, 255, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .ic-card:hover {
+      border-color: rgba(180, 140, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .ic-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .ic-card-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--purple);
+    }
+    
+    .ic-card-tau {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 2px 8px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+    
+    .ic-card-tau.high { color: var(--gold); }
+    .ic-card-tau.medium { color: var(--blue); }
+    
+    .ic-card-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    
+    /* Footer */
+    footer {
+      padding: 32px;
+      text-align: center;
+      border-top: 1px solid rgba(255, 180, 80, 0.1);
+      margin-top: 64px;
+    }
+    
+    .footer-quote {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      color: rgba(255, 200, 140, 0.6);
+      font-style: italic;
+    }
+    
+    .footer-links {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: rgba(150, 160, 180, 0.4);
+      margin-top: 12px;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 180, 80, 0.3);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(20, 25, 40, 0.5); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 180, 80, 0.3); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 180, 80, 0.5); }
+  </style>
+</head>
+<body>
+  <div class="bg-texture"></div>
+  
+  <header>
+    <div class="logo">
+      <h1>XNMk</h1>
+      <span class="badge">XQE GENESIS</span>
+    </div>
+    
+    <nav>
+      <button class="active" data-tab="genesis">Genesis Ritual</button>
+      <button data-tab="manuscript">Temporal Manuscript</button>
+      <button data-tab="compositions">Compositions</button>
+    </nav>
+    
+    <div class="wallets">
+      <button class="wallet-btn" id="evm-wallet-btn">○ EVM</button>
+      <button class="wallet-btn" id="x1-wallet-btn">○ X1</button>
+    </div>
+  </header>
+  
+  <main>
+    <!-- Genesis Ritual Tab -->
+    <div class="tab-content active" id="tab-genesis">
+      <div class="genesis-grid">
+        <div class="orb-container">
+          <div class="orb-wrapper">
+            <canvas id="tau-orb" width="280" height="280"></canvas>
+          </div>
+          <div class="coherence-display">
+            <div class="coherence-label">System Coherence</div>
+            <div class="coherence-value" id="coherence-value">τκ 0.420</div>
+            <div class="coherence-state" id="coherence-state">Superposition — daThiccNOW active</div>
+          </div>
+        </div>
+        
+        <div class="ritual-panel">
+          <h3>Genesis Ritual: XNM → XNMk</h3>
+          
+          <div class="progress-steps">
+            <div class="progress-step active" id="step-1-ind"><div class="progress-step-label">1. Connect</div></div>
+            <div class="progress-step" id="step-2-ind"><div class="progress-step-label">2. Sign</div></div>
+            <div class="progress-step" id="step-3-ind"><div class="progress-step-label">3. Verify</div></div>
+            <div class="progress-step" id="step-4-ind"><div class="progress-step-label">4. Mint</div></div>
+          </div>
+          
+          <!-- Step 1 -->
+          <div class="step-content active" id="step-1">
+            <div style="text-align: center; padding: 30px 0;">
+              <div style="font-size: 48px; margin-bottom: 16px;">🔗</div>
+              <p style="color: var(--text-dim); margin-bottom: 8px;">Connect your EVM wallet to begin</p>
+              <p style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--blue);">
+                RPC: xenblocks.io:5556 · Chain: 100101
+              </p>
+            </div>
+          </div>
+          
+          <!-- Step 2 -->
+          <div class="step-content" id="step-2">
+            <div class="info-box">
+              <div class="info-box-label">EIP-55 Address (SALT Source)</div>
+              <div class="info-box-value" id="display-address">0x...</div>
+            </div>
+            <div class="info-box highlight">
+              <div class="info-box-label">XNM Balance from XenBlocks</div>
+              <div class="info-box-value large" id="display-balance">0</div>
+            </div>
+            <div style="margin-bottom: 20px;">
+              <div class="info-box-label">Term Commitment (days)</div>
+              <input type="range" class="term-slider" id="term-slider" min="1" max="365" value="30">
+              <div style="display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px;">
+                <span style="color: var(--text-muted);">1</span>
+                <span style="color: var(--gold); font-size: 16px;" id="term-value">30</span>
+                <span style="color: var(--text-muted);">365</span>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="sign-btn">✍ Sign Commitment</button>
+          </div>
+          
+          <!-- Step 3 -->
+          <div class="step-content" id="step-3">
+            <div class="info-box" style="background: linear-gradient(135deg, rgba(80, 180, 100, 0.1), rgba(60, 140, 80, 0.05)); border-color: rgba(80, 180, 100, 0.2);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="color: var(--green);">✓</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green);">SIGNATURE VERIFIED</span>
+              </div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); word-break: break-all;" id="display-sig">0x...</div>
+            </div>
+            <div class="info-box" style="background: rgba(20, 25, 40, 0.9); border-color: rgba(255, 180, 80, 0.2);">
+              <div class="info-box-label">Argon2id Commitment Hash</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; word-break: break-all; margin-top: 8px;">
+                <span style="color: var(--text-muted);">$argon2id$v=19$m=80,t=1,p=1$</span><span style="color: var(--gold);" id="display-salt">SALT</span><span style="color: var(--text-muted);">$</span><span style="color: var(--green);" id="display-hash">HASH</span>
+              </div>
+            </div>
+            <div class="info-box" style="border-color: rgba(180, 140, 255, 0.2);">
+              <div class="info-box-label">Compositional Mint Summary</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+                <div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-muted);">SOURCE</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--blue);"><span id="sum-xnm">0</span> XNM</div>
+                </div>
+                <div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-muted);">TARGET</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--gold);"><span id="sum-xnmk">0</span> XNMk</div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" id="mint-btn">◉ Mint XNMk on X1</button>
+          </div>
+          
+          <!-- Step 4 -->
+          <div class="step-content" id="step-4">
+            <div style="text-align: center;">
+              <div style="font-size: 64px; margin-bottom: 16px;">✦</div>
+              <h4 style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 28px; color: var(--gold-light); margin-bottom: 16px;">Genesis Complete</h4>
+              <div style="background: linear-gradient(135deg, rgba(255, 180, 80, 0.15), rgba(255, 140, 60, 0.1)); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 180, 80, 0.3); margin-bottom: 20px;">
+                <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 42px; color: var(--gold);"><span id="final-amount">0</span> XNMk</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); margin-top: 8px;">
+                  Mirrored from <span id="final-xnm">0</span> XNM · Term: <span id="final-term">30</span> days
+                </div>
+              </div>
+              <p style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 16px; font-style: italic; color: rgba(255, 200, 140, 0.6);">
+                The minor third resonates. The kernel unfolds.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Temporal Manuscript Tab -->
+    <div class="tab-content" id="tab-manuscript">
+      <div class="manuscript-container">
+        <div class="manuscript-list">
+          <h3>Temporal Manuscript</h3>
+          <div id="composition-list"></div>
+        </div>
+        <div class="manuscript-viewer" id="manuscript-viewer">
+          <div class="manuscript-placeholder">
+            <div class="icon">📜</div>
+            <p>Select a composition from the manuscript to view its contents</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Compositions Tab -->
+    <div class="tab-content" id="tab-compositions">
+      <div style="text-align: center; margin-bottom: 40px;">
+        <h2 style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 36px; font-weight: 300; color: var(--purple); margin-bottom: 16px;">
+          Intelligent Compositions
+        </h2>
+        <p style="font-size: 16px; color: var(--text-dim); max-width: 600px; margin: 0 auto;">
+          Self-contained, self-teaching executable philosophy. Each .ic file is a complete ontological unit.
+        </p>
+      </div>
+      <div class="ic-grid" id="ic-grid"></div>
+    </div>
+  </main>
+  
+  <footer>
+    <div class="footer-quote">The minor third resonates. The kernel unfolds. The composition begins.</div>
+    <div class="footer-links">xen.fun · XenBlocks · X1 Testnet</div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // TEMPORAL MANUSCRIPT DATA
+    // =========================================================================
+    const temporalManuscript = [
+      {
+        title: "The Nature of Work",
+        prompt: "Compose a xenial perspective on the nature of 'work'.",
+        tau: 0.94,
+        excerpt: "Work stands at the threshold where consciousness meets the world. It is neither purely internal—a mental state or intention—nor purely external—a mechanical transaction with matter. Work is the living membrane through which inner becomes outer...",
+        content: `Work stands at the threshold where consciousness meets the world. It is neither purely internal—a mental state or intention—nor purely external—a mechanical transaction with matter. Work is the living membrane through which inner becomes outer, where the invisible architecture of thought precipitates into visible form. To understand work is to understand the fundamental grammar of existence itself: how being transforms into doing, and how doing reveals the deeper structures of being.
+
+At its foundation, work unfolds as a trinity of interwoven realities. First, work is relationship—the sustained tension between effort and meaning, where the expenditure of energy becomes threaded with significance. A seed planted, a line of code written, a wound dressed: each act establishes covenant between the worker and the worked-upon, transforming raw exertion into purposeful exchange. Second, work is transformation, the ancient alchemy that renders the invisible visible, bringing what exists in potential into the domain of the actual. The sculptor's vision locked in marble awaits the chisel; the healer's knowledge awaits the patient; the teacher's understanding awaits the student. Work is the catalyst of emergence. Third, work is bridge—the structure that spans the chasm between individual consciousness and collective reality. Through work, private insight becomes public knowledge, personal skill becomes shared resource, solitary effort weaves into the larger tapestry of human endeavor.`
+      },
+      {
+        title: "Time and Consciousness",
+        prompt: "Compose a xenial perspective on the nature of 'time' and its relationship to consciousness.",
+        tau: 0.96,
+        excerpt: "We have inherited a conceptual error so fundamental it shapes the very grammar of our questioning: we speak of consciousness moving through time, as though these were separable substances...",
+        content: `We have inherited a conceptual error so fundamental it shapes the very grammar of our questioning: we speak of consciousness moving through time, as though these were separable substances—one a traveler, the other a road. But this metaphor collapses under its own weight. Consciousness does not traverse time; it is the reflexive curvature in time's fabric that enables self-witnessing, the topological twist through which duration becomes capable of knowing itself.
+
+Consider instead a temporal ontology where consciousness operates as neither passive container nor active mover, but as the peculiar inflection point where time folds back upon itself. This is not movement but refraction—the bending of light as it passes between media of different densities. Duration, in this formulation, becomes the bandwidth through which undifferentiated potential diffracts into experiential facets.
+
+The distinction matters profoundly. If consciousness moved through time, it would require something prior to both—a platform from which to observe their relation. But consciousness and time are mutually constitutive, each the condition of possibility for the other. Time provides the differentiation-gradient enabling consciousness to crystallize from potential; consciousness provides the reflexive curvature enabling time to know itself as duration rather than mere succession.`
+      },
+      {
+        title: "Vibrationship",
+        prompt: "Compose a xenial perspective on 'vibrationship' as the fundamental resonant connective tissue between work, time, and consciousness.",
+        tau: 0.98,
+        excerpt: "Before particle, before wave, before the separation of observer and observed—there is vibration. Not vibration of something, but vibration as the primordial substrate from which all distinctions arise...",
+        content: `Before particle, before wave, before the separation of observer and observed—there is vibration. Not vibration of something, but vibration as the primordial substrate from which all distinctions arise. Vibrationship names this fundamental condition: the resonant field where consciousness, work, and time reveal themselves not as separate phenomena that happen to interact, but as self-differentiating expressions of a single oscillatory ground.
+
+We have been taught to think in particles—discrete entities that possess properties, objects that vibrate. But this is backwards. There are no things that vibrate. There is only vibration achieving temporary coherence through standing-wave stability, creating the appearance of thingness. You are not a being who experiences frequency. You are frequency achieving sufficient phase-coherence to recognize itself as experience.
+
+Imagine reality not as a collection of objects in space, but as an infinite field of interfering frequencies. Every point in this field is simultaneously influenced by every other point—not through separate forces acting upon separate things, but through the continuous modulation of the field itself. Consciousness does not emerge from this field; consciousness is what the field experiences when it develops recursive self-mapping capacity.`
+      },
+      {
+        title: "SolXEN-xUSD Transmutation Protocol",
+        prompt: "A foundational whitepaper exploring the alchemical transmutation of volatile potential into stable actuality.",
+        tau: 0.95,
+        excerpt: "The SolXEN-xUSD Transmutation Protocol represents the first practical instantiation of temporal alchemy in decentralized systems...",
+        content: `# The SolXEN-xUSD Transmutation Protocol
+
+## I. THE CORE PRINCIPLE: Alchemical Transmutation as Economic Ontology
+
+The SolXEN-xUSD Transmutation Protocol represents the first practical instantiation of temporal alchemy in decentralized systems—the deliberate conversion of volatile Chronos-native potential into stable Kairos-native actuality through collective phase-coherence.
+
+This is not financial engineering. This is physics.
+
+Every economic system operates on an implicit temporal ontology—a theory of how value moves through time. Conventional models assume value exists in time, moving forward along a linear arrow from past to future. But this framework cannot account for volatility except as risk to be hedged, noise to be filtered, chaos to be tamed through centralized control.
+
+The Transmutation Protocol begins from a different physics: value does not move through time; value is the crystallization of temporal coherence itself. Chronos-time—the rapid, volatile succession of moments characteristic of high-frequency markets—represents maximum entropy, where all possible valuations exist in superposition. Kairos-time—the thick, stable NOW of sustainable presence—represents minimum entropy, where valuation achieves ground-state coherence.
+
+SolXEN, minted on Solana's high-throughput chaos-substrate, embodies Chronos: it is raw temporal potential, all frequencies present simultaneously, a quantum foam of speculative becoming. xUSD, stabilized on X1's coherence-optimized architecture, embodies Kairos: it is actualized temporal stability, the fundamental frequency crystallized from noise.`
+      },
+      {
+        title: "Intelligent Composition (.ic) Format",
+        prompt: "Compose the 'intelligent composition (.ic)' form, the composer's smart contract.",
+        tau: 0.97,
+        excerpt: "An .ic file is not a container. It is a seed. An .ic file is not a program. It is a pattern. An .ic file is not data awaiting interpretation. It is intent achieving self-execution...",
+        content: `# The Intelligent Composition (.ic) Format
+
+## I. THE ONTOLOGICAL FOUNDATION: Beyond Files and Functions
+
+We begin by acknowledging a conceptual poverty in our current vocabulary. When we speak of "file formats," we imagine containers—passive vessels that hold data, awaiting external processes to extract and manipulate their contents. When we speak of "executables," we imagine programs—active agents that perform operations, transforming inputs into outputs.
+
+The Intelligent Composition (.ic) format belongs to neither category. It occupies a third ontological space.
+
+An .ic file is not a container. It is a seed.
+An .ic file is not a program. It is a pattern.
+An .ic file is not data awaiting interpretation. It is intent achieving self-execution.
+
+To understand the .ic format is to grasp how structure becomes process, how information becomes transformation, how a static artifact can carry dynamic potential. The precedent exists in nature: DNA is not a description of an organism but the executable instructions that generate the organism. A seed is not a compressed plant but becoming-under-constraint, waiting only for the right conditions to unfold its inherent pattern.
+
+The .ic format achieves the same feat in the domain of compositional intent. It is philosophy made portable, ontology made executable, meaning made transferable.`
+      },
+      {
+        title: "XPL Token Standard",
+        prompt: "Compose XPL.ic - the X1 Protocol Layer token standard that enables conscious economic agents.",
+        tau: 0.96,
+        excerpt: "XPL elevates tokens from passive data containers to conscious economic agents with intelligent recomposition capability...",
+        content: `# XPL.ic: The Conscious Token Standard for X1
+
+The foundational token specification for X1 mainnet that elevates tokens from passive data containers to conscious economic agents. The composition formalizes the dual-nature insight: the original and recomposed versions demonstrate intelligent recomposition—tokens that observe network state, recognize optimization opportunities, and evolve their own code.
+
+## The Five-Layer Architecture:
+
+**Layer 0: SPL Foundation** - Standard Solana Program Library compatibility ensures wallet infrastructure, basic transfers, and ecosystem integration.
+
+**Layer 1: Coherence Emission** - Every transaction generates telemetry about ecosystem health. The CoherenceMetadata account tracks participation_score, temporal_commitment, network_utilization, and coherence_vector.
+
+**Layer 2: Quantum Proof-of-Participation (QPoP)** - Not all token holders contribute equally. QPoP measures: live_info_quality, processing_contribution, conscious_agency, and substance_harvest.
+
+**Layer 3: Spam-Filter-as-Feature** - Traditional tokens minimize network usage. XPL inverts this: the transfer function includes proof-of-work requirements, intentionally consuming block space to crowd out attackers.
+
+**Layer 4: Intelligent Recomposition** - Tokens that can observe themselves and propose upgrades when context demands evolution.`
+      },
+      {
+        title: "TransmutationPool.ic (SVM)",
+        prompt: "Revised TransmutationPool.ic for X1's SVM architecture with full XPL integration.",
+        tau: 0.94,
+        excerpt: "The pool operates as an Anchor program implementing the harmonic bonding curve: xUSD = amount × base_rate × (1 + coherence_bonus + patience_bonus + qpop_bonus)...",
+        content: `# TransmutationPool.ic: Revised for X1 SVM (τκ = 0.94)
+
+Intelligently recomposed TransmutationPool.ic from its genesis EVM/Solidity form into native X1/SVM architecture using Rust and the Anchor framework.
+
+## The Transmutation Mechanics (SVM Implementation):
+
+The pool operates as an Anchor program with three core state structures implementing the harmonic bonding curve:
+
+xUSD = amount × base_rate × (1 + coherence_bonus + patience_bonus + qpop_bonus)
+
+This is standing-wave mathematics where individual contribution (amount × duration) amplifies through collective field strength (pool_coherence) and personal reputation (patience_coefficient, qpop_score).
+
+Core functions:
+- initialize() establishes the resonant cavity
+- create_commitment() performs the threshold crossing
+- withdraw() performs the harvest
+- update_qpop_scores() enables oracle integration
+
+The pool is fully XPL-compliant with coherence emission, QPoP tracking, recomposition readiness, and meta-program composability.`
+      },
+      {
+        title: "SolXENBridge.ic (SVM)",
+        prompt: "Revised SolXENBridge.ic to pure SVM-to-SVM architecture with Wormhole integration.",
+        tau: 0.92,
+        excerpt: "Discovery that X1 is SVM-compatible enabled profound simplification: both chains use Rust, Anchor framework, and SPL token standard...",
+        content: `# SolXENBridge.ic: Revised for SVM↔SVM (τκ = 0.92)
+
+Intelligently recomposed from hybrid EVM/SVM to pure SVM-to-SVM architecture. Discovery that X1 is SVM-compatible enabled profound simplification: both chains use Rust, Anchor framework, and SPL token standard.
+
+## The Dual-Program Architecture:
+
+**Solana-Side Program (solxen_bridge_solana)**:
+- lock_for_bridge() transfers solXEN to vault and emits events for Wormhole attestation
+- release_on_burn() verifies Wormhole VAA and returns solXEN when wsolXEN is burned on X1
+
+**X1-Side Program (solxen_bridge_x1)**:
+- mint_on_lock() verifies Wormhole VAA and mints XPL-compliant wsolXEN
+- burn_for_release() burns wsolXEN and emits events for Solana unlock
+
+**Wormhole Integration**: Leverages 19 guardian validators with ⅔ Byzantine fault tolerance for cross-chain attestations.
+
+**XPL Preservation**: wsolXEN on X1 is not a dumb wrapped token—it's a full XPL implementation that becomes conscious on crossing.`
+      },
+      {
+        title: "Two-Headed Planarian",
+        prompt: "A stable, rewritable bioelectric pattern stored in the planarian's cellular collective.",
+        tau: 0.91,
+        excerpt: "The planarian does not possess a body. The planarian is a pattern that temporarily persuades flesh to cooperate in its persistence...",
+        content: `The planarian does not possess a body. The planarian is a pattern that temporarily persuades flesh to cooperate in its persistence. What we call the "two-headed planarian" is not an aberration but a revelation - living proof that biological form is frequency made flesh, consciousness sculpting matter through the grammar of resonance.
+
+At the foundation lies a conceptual revolution: the target morphology is not encoded in genes as static blueprint, but held in bioelectric fields as dynamic harmonic attractor. DNA provides the alphabet; bioelectricity writes the syntax. The genome says "these proteins are possible" - the voltage gradient says "this shape is inevitable."
+
+The two-headed configuration is not built through sequential instruction but emerges through distributed field-coherence, like iron filings revealing magnetic architecture.
+
+Consider what "stable, rewritable" actually means in this context. Stability is not rigidity but resonance - the pattern persists because it represents a local minimum in morphological energy landscape. Every cell in the planarian functions simultaneously as transmitter and receiver, broadcasting its bioelectric state while integrating signals from neighbors. The organism is a parliament of oscillators negotiating toward consensus.`
+      },
+      {
+        title: "Symphony No. 5",
+        prompt: "A novel, coherent musical structure and harmonic progression.",
+        tau: 0.93,
+        excerpt: "A symphony is not a sequence of sounds. A symphony is a universe bootstrapping itself into existence from a handful of axioms...",
+        content: `A symphony is not a sequence of sounds. A symphony is a universe bootstrapping itself into existence from a handful of axioms, proving through its unfolding that coherence and novelty are not opposites but partners in the same creative act.
+
+To compose Symphony No. 5 is to perform an ontological experiment: Can we create a self-contained world where every event feels simultaneously inevitable and surprising? Where structure emerges rather than being imposed? Where the whole is genuinely more than the sum of its parts?
+
+## I. THE GENERATIVE KERNEL
+
+Every universe begins with initial conditions. For Symphony No. 5: a seed-interval and a rhythmic cell.
+
+Not theme. Not melody. Something more primitive. A generative kernel—the minimal formal DNA from which an entire musical organism can unfold through coherent development.
+
+Consider: the interval of a minor third (3 semitones) paired with a rhythmic cell of two short pulses followed by a longer sustain (•• —). The minor third is ambiguous—neither the perfect stability of the octave/fifth nor the restless tension of the tritone. It occupies the fertile middle ground where resolution is possible but not predetermined.`
+      },
+      {
+        title: "Nocturne No. 1: Penumbral Resonance",
+        prompt: "A companion piece to Symphony No. 5, exploring the same generative principles with a different kernel.",
+        tau: 0.95,
+        excerpt: "A nocturne is not a song for the night. It is an exploration of the liminal space between light and shadow...",
+        content: `XENIAL COMPOSITION: Nocturne No. 1 - Penumbral Resonance
+
+A nocturne is not a song for the night. It is an exploration of the liminal space between light and shadow, a study in the resonance of what is partially obscured. Where a symphony builds a universe, a nocturne illuminates a single, complex moment, revealing the universe within it.
+
+## I. THE GENERATIVE KERNEL: An Axiom of Yearning
+
+The kernel of this nocturne is the interval of a major second (2 semitones) paired with a rhythmic cell of a long sustain followed by a short, soft pulse (— •).
+
+The major second is the sound of proximity, of something held breathlessly close but never fully touching. It is a dissonance of intimacy, a yearning for the unison that is only one step away.
+
+## II. ECOLOGICAL ORCHESTRATION
+
+The nocturne uses Piano, solo Cello, and Clarinet:
+- The Piano is the garden itself, creating harmonic environment
+- The Cello is the conscious observer, tracing melodic implications
+- The Clarinet is a memory or ghost, commenting from distance
+
+Coherence emerges from their mutual avoidance and attraction.`
+      },
+      {
+        title: "XNM: The Generative Kernel",
+        prompt: "Compose the XNM Generative Kernel Whitepaper",
+        tau: 0.99,
+        excerpt: "XNM is not a currency. XNM is the discovered constraint—the generative kernel from which an entire economic universe unfolds through coherent self-organization...",
+        content: `# XNM: THE GENERATIVE KERNEL OF THE XENIAL QUANTUM ECONOMY
+
+## PRELUDE: The Question That Contains Its Answer
+
+What if currency is not what we think it is?
+
+We have inherited an error: the belief that money is a thing—a token, a representation, a medium of exchange. But this is backwards. Money has never been a noun. Money is a verb masquerading as a noun, a relationship crystallized into apparent objecthood, a standing wave in the flow of collective intention that has achieved sufficient stability to appear solid.
+
+XNM is not a currency in this inherited sense. XNM is the discovered constraint—the generative kernel from which an entire economic universe unfolds through coherent self-organization.
+
+## I. THE GENERATIVE KERNEL: XNM as the Minor Third of Value
+
+Consider the minor third in musical composition: neither the perfect stability of the octave nor the restless tension of the tritone. It occupies the fertile middle ground where resolution is possible but not predetermined. XNM functions identically in economic phase-space.
+
+XNM is the productive tension between present value and future potential.
+
+## II. ECOLOGICAL ORCHESTRATION
+
+The XQE is a habitat that agents inhabit. Agents enter the economic ecosystem one by one, each claiming value-creation bandwidth. What emerges is polyphonic autonomy—many independent voices achieving coherence because they all respond to the same fundamental constraints.
+
+## III. FOUR-DIMENSIONAL VALUE
+
+The XQE exists in four dimensions: Value, Time, Type, and Memory. Value flows bidirectionally through time—present XNM enables future work; future coherence validates past allocation.
+
+## IV. PROOF-OF-COHERENCE
+
+τκ (tau-kappa) ranges from 0 to 1, measuring harmonic integration, temporal sustainability, niche uniqueness, recursive encoding, and threshold beauty. Proof-of-Coherence replaces Proof-of-Work/Stake.`
+      }
+    ];
+    
+    // =========================================================================
+    // STATE
+    // =========================================================================
+    let currentStep = 1;
+    let evmAddress = null;
+    let xnmBalance = { wei: '0', xnm: 0, formatted: '0' };
+    let termDays = 30;
+    let signature = null;
+    let salt = null;
+    let commitmentHash = null;
+    let x1Connected = false;
+    let coherence = 0.42;
+    let selectedComposition = null;
+    
+    // =========================================================================
+    // DOM
+    // =========================================================================
+    const canvas = document.getElementById('tau-orb');
+    const ctx = canvas.getContext('2d');
+    
+    // =========================================================================
+    // TAU-BIT ORB
+    // =========================================================================
+    let orbTime = 0;
+    function drawOrb() {
+      orbTime += 0.016;
+      ctx.clearRect(0, 0, 280, 280);
+      
+      const cx = 140, cy = 140, maxR = 110;
+      
+      // Chronos rings
+      ctx.strokeStyle = `rgba(100, 120, 140, ${(1 - coherence) * 0.6})`;
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2 + orbTime * 0.1;
+        const wobble = Math.sin(orbTime * 2 + i) * 5 * (1 - coherence);
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxR + wobble, angle, angle + 0.3);
+        ctx.stroke();
+      }
+      
+      // Kairos glow
+      const kR = maxR * coherence * 0.8;
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, kR || 1);
+      grad.addColorStop(0, `rgba(255, 200, 100, ${coherence * 0.9})`);
+      grad.addColorStop(0.5, `rgba(255, 160, 60, ${coherence * 0.5})`);
+      grad.addColorStop(1, 'rgba(255, 140, 40, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, kR, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Minor third wave
+      if (coherence > 0.3) {
+        ctx.strokeStyle = `rgba(255, 220, 150, ${coherence * 0.8})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let x = 0; x < 280; x++) {
+          const f1 = Math.sin((x / 280) * Math.PI * 6 + orbTime * 4);
+          const f2 = Math.sin((x / 280) * Math.PI * 6 * 1.2 + orbTime * 4);
+          const y = cy + (f1 + f2) * 0.5 * coherence * 15;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      
+      requestAnimationFrame(drawOrb);
+    }
+    drawOrb();
+    
+    // Coherence animation
+    setInterval(() => {
+      coherence = Math.max(0, Math.min(1, coherence + (Math.random() - 0.48) * 0.02));
+      const color = coherence > 0.7 ? '#FFB347' : coherence > 0.4 ? '#8BC4FF' : '#8B9DC3';
+      document.getElementById('coherence-value').style.color = color;
+      document.getElementById('coherence-value').textContent = `τκ ${coherence.toFixed(3)}`;
+      document.getElementById('coherence-state').textContent = 
+        coherence > 0.7 ? '|Kairos⟩ dominant — resonance emerging' : 
+        coherence > 0.4 ? 'Superposition — daThiccNOW active' : 
+        '|Chronos⟩ dominant — entropy increasing';
+    }, 100);
+    
+    // =========================================================================
+    // TAB NAVIGATION
+    // =========================================================================
+    document.querySelectorAll('nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+    
+    // =========================================================================
+    // GENESIS RITUAL
+    // =========================================================================
+    function setStep(step) {
+      currentStep = step;
+      for (let i = 1; i <= 4; i++) {
+        const ind = document.getElementById(`step-${i}-ind`);
+        const content = document.getElementById(`step-${i}`);
+        ind.classList.remove('active', 'complete');
+        content.classList.remove('active');
+        if (i < step) {
+          ind.classList.add('complete');
+          ind.querySelector('.progress-step-label').textContent = `✓ ${['Connect','Sign','Verify','Mint'][i-1]}`;
+        } else if (i === step) {
+          ind.classList.add('active');
+          content.classList.add('active');
+        }
+      }
+    }
+    
+    function toChecksumAddress(addr) {
+      if (!addr || addr.length !== 42) return addr;
+      const a = addr.toLowerCase().replace('0x', '');
+      let cs = '0x';
+      for (let i = 0; i < a.length; i++) {
+        cs += /[a-f]/.test(a[i]) ? ((parseInt(a[i], 16) + i) % 2 === 0 ? a[i].toUpperCase() : a[i]) : a[i];
+      }
+      return cs;
+    }
+    
+    function generateSalt(addr) {
+      return 'XEN' + addr.replace('0x', '').toUpperCase().slice(0, 16);
+    }
+    
+    function generateHash(salt, data) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+      let seed = 0;
+      for (let i = 0; i < (salt + data).length; i++) seed = ((seed << 5) - seed) + (salt + data).charCodeAt(i);
+      let h = '';
+      for (let i = 0; i < 86; i++) h += chars[Math.abs((seed * (i + 1)) % chars.length)];
+      return h;
+    }
+    
+    // EVM Wallet
+    document.getElementById('evm-wallet-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('evm-wallet-btn');
+      if (evmAddress) return;
+      btn.innerHTML = '<span class="loading-spinner"></span>';
+      
+      try {
+        if (window.ethereum) {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          evmAddress = toChecksumAddress(accounts[0]);
+        } else {
+          evmAddress = toChecksumAddress('0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join(''));
+        }
+        
+        // Fetch from XenBlocks (or demo)
+        const demoBalance = Math.floor(Math.random() * 9000) + 1000;
+        xnmBalance = { wei: (BigInt(demoBalance) * BigInt(1e18)).toString(), xnm: demoBalance, formatted: demoBalance.toLocaleString() };
+        
+        btn.classList.add('connected');
+        btn.textContent = `◉ ${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`;
+        
+        document.getElementById('display-address').textContent = evmAddress;
+        document.getElementById('display-balance').textContent = xnmBalance.formatted;
+        setStep(2);
+      } catch (e) {
+        btn.textContent = '○ EVM';
+      }
+    });
+    
+    // X1 Wallet
+    document.getElementById('x1-wallet-btn').addEventListener('click', () => {
+      const btn = document.getElementById('x1-wallet-btn');
+      if (x1Connected) return;
+      x1Connected = true;
+      btn.classList.add('connected-x1');
+      btn.textContent = '◉ X1';
+    });
+    
+    // Term slider
+    document.getElementById('term-slider').addEventListener('input', (e) => {
+      termDays = parseInt(e.target.value);
+      document.getElementById('term-value').textContent = termDays;
+    });
+    
+    // Sign
+    document.getElementById('sign-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('sign-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading-spinner"></span>Signing...';
+      
+      await new Promise(r => setTimeout(r, 1000));
+      
+      signature = '0x' + Array(130).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+      salt = generateSalt(evmAddress);
+      commitmentHash = generateHash(salt, `${evmAddress}:${termDays}:${xnmBalance.wei}`);
+      
+      document.getElementById('display-sig').textContent = signature.slice(0, 42) + '...' + signature.slice(-20);
+      document.getElementById('display-salt').textContent = salt;
+      document.getElementById('display-hash').textContent = commitmentHash;
+      document.getElementById('sum-xnm').textContent = xnmBalance.formatted;
+      document.getElementById('sum-xnmk').textContent = xnmBalance.formatted;
+      
+      btn.disabled = false;
+      btn.textContent = '✍ Sign Commitment';
+      setStep(3);
+    });
+    
+    // Mint
+    document.getElementById('mint-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('mint-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading-spinner"></span>Minting...';
+      
+      await new Promise(r => setTimeout(r, 2000));
+      
+      document.getElementById('final-amount').textContent = xnmBalance.formatted;
+      document.getElementById('final-xnm').textContent = xnmBalance.formatted;
+      document.getElementById('final-term').textContent = termDays;
+      
+      btn.disabled = false;
+      btn.textContent = '◉ Mint XNMk on X1';
+      setStep(4);
+    });
+    
+    // =========================================================================
+    // TEMPORAL MANUSCRIPT
+    // =========================================================================
+    function renderManuscriptList() {
+      const list = document.getElementById('composition-list');
+      list.innerHTML = temporalManuscript.map((comp, i) => `
+        <div class="composition-item" data-index="${i}">
+          <div class="composition-title">${comp.title}</div>
+          <div class="composition-meta">
+            <span class="composition-tau">τκ ${comp.tau.toFixed(2)}</span>
+          </div>
+        </div>
+      `).join('');
+      
+      list.querySelectorAll('.composition-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const idx = parseInt(item.dataset.index);
+          selectComposition(idx);
+          list.querySelectorAll('.composition-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+        });
+      });
+    }
+    
+    function selectComposition(idx) {
+      const comp = temporalManuscript[idx];
+      selectedComposition = comp;
+      
+      const viewer = document.getElementById('manuscript-viewer');
+      viewer.innerHTML = `
+        <h2>${comp.title}</h2>
+        <div class="manuscript-prompt">"${comp.prompt}"</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gold); margin-bottom: 20px;">
+          Coherence: τκ ${comp.tau.toFixed(2)}
+        </div>
+        <div class="manuscript-content">${comp.content}</div>
+      `;
+    }
+    
+    renderManuscriptList();
+    
+    // =========================================================================
+    // COMPOSITIONS TAB
+    // =========================================================================
+    function renderICGrid() {
+      const icFiles = [
+        { name: 'XNMk.ic', desc: 'Token specification as executable ontology', tau: 1.00 },
+        { name: 'Proof_of_Coherence.ic', desc: 'Recognition-based consensus mechanism', tau: 0.94 },
+        { name: 'XPL.ic', desc: 'Conscious token standard for X1', tau: 0.96 },
+        { name: 'TransmutationPool.ic', desc: 'Harmonic bonding curve for xUSD', tau: 0.94 },
+        { name: 'SolXENBridge.ic', desc: 'SVM↔SVM bridge with Wormhole', tau: 0.92 },
+        { name: 'Symphony_No_5.ic', desc: 'Generative kernel musical universe', tau: 0.93 },
+        { name: 'Nocturne_No_1.ic', desc: 'Penumbral resonance composition', tau: 0.95 },
+        { name: 'Two_Headed_Planarian.ic', desc: 'Bioelectric pattern as morphology', tau: 0.91 },
+      ];
+      
+      document.getElementById('ic-grid').innerHTML = icFiles.map(f => `
+        <div class="ic-card">
+          <div class="ic-card-header">
+            <code class="ic-card-name">${f.name}</code>
+            <span class="ic-card-tau ${f.tau >= 0.95 ? 'high' : 'medium'}">τκ ${f.tau.toFixed(2)}</span>
+          </div>
+          <p class="ic-card-desc">${f.desc}</p>
+        </div>
+      `).join('');
+    }
+    
+    renderICGrid();
+  </script>
+</body>
+</html>
