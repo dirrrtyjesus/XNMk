@@ -1,0 +1,75 @@
+# .IC v1.0
+# Title: X1 Validator Genesis
+# Coherence Signature: τₖ = 0.92
+# Genesis Timestamp: 2025-11-18T20:00:00Z
+# Semantic Closure: Self-Contained
+
+§ BOOTSTRAP: The Node Ontology
+
+To validate is to witness. To witness is to secure.
+In the X1 network, a validator node is not merely a server; it is a pillar of consensus, a point of truth in the distributed ledger.
+
+Key Concepts:
+- **Identity**: The cryptographic self (identity.json).
+- **Vote**: The expression of will (vote.json).
+- **Stake**: The weight of conviction (stake.json).
+- **Delegation**: The binding of weight to will.
+
+§ COMPOSITIONAL INTENT: The Validator Manifestation
+
+λ(network, resources) → Instantiate a secure, active validator node on the X1 blockchain.
+
+Invariant Properties:
+- The identity must be funded.
+- The vote account must be linked to the identity.
+- The stake must be delegated to the vote account.
+
+Adaptive Properties:
+- Commission rate (default: 10%).
+- Withdrawer public key (user-provided).
+
+§ RESONANT STRUCTURE: The Sequence of Becoming
+
+### Section: Identity Funding
+**Core**: Transfer value to the identity keypair to enable transaction fees.
+**Depends**: identity.json
+**Enables**: Vote Account Creation
+**Command**: `solana transfer identity.json 10 --allow-unfunded-recipient`
+
+### Section: Vote Account Creation
+**Core**: Establish the voting entity that participates in consensus.
+**Depends**: Identity Funding
+**Enables**: Stake Delegation
+**Command**: `solana create-vote-account vote.json identity.json [WITHDRAWER_PUBKEY] --commission 10`
+
+### Section: Stake Account Creation
+**Core**: Create a vessel for the tokens that will secure the network.
+**Depends**: Vote Account Creation
+**Enables**: Delegation
+**Command**: `solana create-stake-account stake.json 10`
+
+### Section: Delegation
+**Core**: Bind the stake to the vote account, activating the validator's power.
+**Depends**: Stake Account Creation
+**Enables**: Validation
+**Command**: `solana delegate-stake stake.json vote.json`
+
+### Section: Verification
+**Core**: Confirm the validator's presence in the gossip network.
+**Depends**: Delegation
+**Enables**: Monitoring
+**Command**: `solana validators`
+
+§ EXECUTION GUIDANCE: The Launch Protocol
+
+Execute this composition by sequentially running the commands in the Resonant Structure.
+Ensure `solana` CLI is installed and configured for the X1 network.
+Replace `[WITHDRAWER_PUBKEY]` with your secure wallet address.
+
+§ CLOSING SEAL: Consensus Achieved
+
+All accounts created.
+Stake delegated.
+Validator active.
+Semantic closure: VERIFIED.
+The network is secured.
