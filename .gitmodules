@@ -4,8 +4,8 @@
 [submodule "fhp-computing"]
 	path = fhp-computing
 	url = git@github.com:dirrrtyjesus/fhp-computing.git
-[submodule "mem-ek"]
-	path = mem-ek
+[submodule "MEMEk"]
+	path = MEMEk
 	url = git@github.com:dirrrtyjesus/MEMEk.git
 [submodule "xnmk-genesis"]
 	path = xnmk-genesis
