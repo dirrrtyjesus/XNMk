@@ -1,0 +1,411 @@
+/* Purple Terminal Aesthetics - augLABS Design System */
+/* daThiccNOW Deer pNFT Minter */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700&display=swap');
+
+:root {
+  /* Golden Ratio Scale */
+  --phi: 1.618;
+  --scale-1: calc(1rem * var(--phi));
+  --scale-2: calc(var(--scale-1) * var(--phi));
+  --scale-3: calc(var(--scale-2) * var(--phi));
+
+  /* Purple Terminal Palette */
+  --purple-deep: #0d0415;
+  --purple-dark: #1a0a2e;
+  --purple-core: #6b2fa0;
+  --purple-glow: #9d4edd;
+  --purple-light: #c77dff;
+  --purple-plasma: #e0aaff;
+
+  /* Golden Accents */
+  --gold-core: #d4af37;
+  --gold-glow: #f5d742;
+  --gold-dim: #8b7355;
+
+  /* Semantic Colors */
+  --bg-primary: var(--purple-deep);
+  --bg-secondary: rgba(107, 47, 160, 0.15);
+  --bg-card: rgba(26, 10, 46, 0.85);
+  --text-primary: var(--purple-plasma);
+  --text-secondary: var(--purple-light);
+  --text-muted: rgba(224, 170, 255, 0.6);
+  --accent: var(--gold-core);
+  --success: #4ade80;
+  --error: #f87171;
+
+  /* Effects */
+  --glow-purple: 0 0 30px rgba(157, 78, 221, 0.4);
+  --glow-gold: 0 0 20px rgba(212, 175, 55, 0.5);
+  --blur-glass: blur(12px);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Animated background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(157, 78, 221, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(107, 47, 160, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 30%);
+  pointer-events: none;
+  z-index: -1;
+  animation: pulseBackground 8s ease-in-out infinite;
+}
+
+@keyframes pulseBackground {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* App Container */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: var(--scale-2);
+  padding-bottom: var(--scale-1);
+  border-bottom: 1px solid rgba(157, 78, 221, 0.3);
+}
+
+header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--scale-2);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--purple-plasma) 0%, var(--gold-core) 50%, var(--purple-light) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerText 4s linear infinite;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+header h1 .title-deer {
+  display: block;
+  font-size: calc(var(--scale-2) * 0.85);
+  background: linear-gradient(135deg, var(--gold-core) 0%, var(--purple-plasma) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes shimmerText {
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+/* Wallet Button Override */
+.wallet-adapter-button {
+  background: linear-gradient(135deg, var(--purple-core) 0%, var(--purple-glow) 100%) !important;
+  border-radius: 8px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  transition: all 0.3s ease !important;
+  border: 1px solid var(--purple-glow) !important;
+}
+
+.wallet-adapter-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--glow-purple) !important;
+}
+
+/* Terminal Card */
+.terminal-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(157, 78, 221, 0.4);
+  border-radius: calc(12px * var(--phi));
+  padding: var(--scale-2);
+  box-shadow: var(--glow-purple);
+  backdrop-filter: var(--blur-glass);
+  margin-bottom: var(--scale-1);
+}
+
+.terminal-card h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: var(--scale-1);
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.terminal-card p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Features List */
+.features {
+  list-style: none;
+  margin: 1.5rem 0;
+  padding: 0;
+}
+
+.features li {
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.features li::before {
+  content: '🜏';
+  position: absolute;
+  left: 0;
+  color: var(--gold-core);
+}
+
+/* Golden Button */
+.btn-golden {
+  background: linear-gradient(135deg, var(--gold-core) 0%, var(--gold-glow) 100%);
+  color: var(--purple-deep);
+  font-weight: 700;
+  padding: 1rem calc(1rem * var(--phi));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: var(--glow-gold);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn-golden:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+}
+
+.btn-golden:active {
+  transform: translateY(-1px);
+}
+
+.btn-golden:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--gold-dim);
+}
+
+/* Status Message */
+.status {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(157, 78, 221, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid var(--purple-glow);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.status.success {
+  border-left-color: var(--success);
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.status.error {
+  border-left-color: var(--error);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+/* Result Card */
+.result {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid var(--success);
+  border-radius: 12px;
+}
+
+.result p {
+  margin-bottom: 0.5rem;
+  word-break: break-all;
+}
+
+.result code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: var(--gold-core);
+}
+
+.result a {
+  margin-top: 1rem;
+}
+
+/* Links Row */
+.links-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.links-row a {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* Xenial Glyph */
+.xenial-glyph {
+  text-align: center;
+  font-size: var(--scale-1);
+  margin: 1rem 0;
+  color: var(--gold-core);
+  text-shadow: var(--glow-gold);
+}
+
+/* NFT Preview */
+.nft-preview {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.nft-preview img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 12px;
+  border: 2px solid var(--purple-glow);
+  box-shadow: var(--glow-purple);
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  padding-top: var(--scale-1);
+  text-align: center;
+  border-top: 1px solid rgba(157, 78, 221, 0.2);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+footer p {
+  margin: 0.5rem 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .app {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: var(--scale-1);
+  }
+
+  .terminal-card {
+    padding: var(--scale-1);
+  }
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--purple-glow);
+  border-radius: 50%;
+  border-top-color: var(--gold-core);
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Progress Bar */
+.progress-container {
+  margin-top: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple-glow), var(--gold-core), var(--purple-glow));
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+  transition: width 0.3s ease;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
