@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Fira+Code:wght@300;400;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-xenial-900: #0a0a1f;
+  --color-xenial-800: #14142e;
+  --color-xenial-700: #1f1f3d;
+  --color-xenial-500: #00f0ff;
+  --color-xenial-400: #7B2CBF;
+  --color-xenial-100: #e0e0ff;
+
+  --color-plasma-500: #ff4d4d;
+  --color-plasma-400: #ff9e4d;
+
+  --font-mono: "Fira Code", monospace;
+  --font-display: "Orbitron", sans-serif;
+
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+
+  @keyframes glow {
+    0% {
+      box-shadow: 0 0 5px #00f0ff;
+    }
+
+    100% {
+      box-shadow: 0 0 20px #00f0ff, 0 0 10px #7B2CBF;
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-xenial-900 text-xenial-100 font-mono antialiased;
+    background: radial-gradient(circle at center, #14142e 0%, #0a0a1f 100%);
+    min-height: 100vh;
+  }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
