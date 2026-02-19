@@ -13,3 +13,7 @@
 [submodule "augmntd2nd"]
 	path = augmntd2nd
 	url = git@github.com:dirrrtyjesus/augmntd2nd.git
+[submodule "obbba"]
+	path = obbba
+	url = https://github.com/dirrrtyjesus/OBBBA.git
+	branch = development
