@@ -1,0 +1,36 @@
+{
+    "name": "Therapy",
+    "symbol": "THERAPY",
+    "description": "High-Fidelity Stillness. The reward for metabolic coherence in the Xenial Ecosystem. Proof of Breath.",
+    "image": "REPLACE_WITH_IMAGE_URL",
+    "external_url": "https://auglabs.xyz",
+    "attributes": [
+        {
+            "trait_type": "Composition",
+            "value": "Bio-Digital"
+        },
+        {
+            "trait_type": "Element",
+            "value": "Sulfur 🜏"
+        },
+        {
+            "trait_type": "Yield",
+            "value": "Stillness"
+        }
+    ],
+    "properties": {
+        "files": [
+            {
+                "uri": "REPLACE_WITH_IMAGE_URL",
+                "type": "image/png"
+            }
+        ],
+        "category": "image",
+        "creators": [
+            {
+                "address": "6Ft3FwwNwPmDqfvCUjjQ3zgAjR85vhody6KzrqDNkRPh",
+                "share": 100
+            }
+        ]
+    }
+}
