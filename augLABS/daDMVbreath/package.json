@@ -27,6 +27,8 @@
     "express": "^5.2.1",
     "grammy": "^1.39.3",
     "react": "^19.2.0",
+    "better-sqlite3": "^11.10.0",
+    "pinata-web3": "^0.5.4",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
@@ -34,6 +36,7 @@
     "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
     "@metaplex-foundation/umi": "^1.4.1",
     "@metaplex-foundation/umi-bundle-defaults": "^1.4.1",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.1",
@@ -45,7 +48,6 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
-    "pinata-web3": "^0.5.4",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "~5.9.3",

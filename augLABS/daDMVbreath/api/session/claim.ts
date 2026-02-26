@@ -12,6 +12,10 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { PublicKey } from '@solana/web3.js';
 import { dispenseTherapy } from '../../src/services/therapy-mint.js';
 import { calculateTC, calculatePTO } from '../../src/features/therapy/rewards.js';
+import { recordLitIngression } from '../../src/services/lit-bioregen-bridge.js';
+// Note: attestation count in lit-bioregen-bridge is module-level (in-memory).
+// On Vercel, this persists within a warm lambda instance but resets on cold start.
+// genesisAttestationCount is best-effort until Vercel KV is wired for persistence.
 
 /** Safety cap: max $THERAPY claimable per session call */
 const MAX_CLAIM_PER_SESSION = 100;
@@ -78,6 +82,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const result = await dispenseTherapy(walletAddress, amount);
 
+    // LIT_BioRegen bridge — record ingression if coherence threshold met
+    const litIngression = await recordLitIngression(walletAddress, r, {
+      breathCycles: cycles,
+      holdDuration: hold,
+      tauKAchieved: tauK,
+    });
+    if (litIngression.fired) {
+      console.log(
+        `🜏 LIT_BioRegen ingression: τₖ=${litIngression.tauK.toFixed(3)} | ` +
+        `${litIngression.isGenesisAttestation
+          ? `GENESIS ATTESTATION ${litIngression.genesisAttestationCount}/${litIngression.genesisAttestationsRequired}`
+          : 'ingression'} | ${walletAddress.slice(0, 8)}...`
+      );
+    }
+
     console.log(
       `🜏 $THERAPY dispensed: ${result.amount} → ${walletAddress.slice(0, 8)}... ` +
       `| cycles: ${cycles} | τₖ: ${tauK.toFixed(2)} | sig: ${result.signature.slice(0, 16)}...`
@@ -88,6 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       signature: result.signature,
       amount: result.amount,
       mint: result.mint,
+      litIngression: litIngression.fired ? litIngression : undefined,
     });
   } catch (err) {
     console.error('$THERAPY dispense failed:', err);

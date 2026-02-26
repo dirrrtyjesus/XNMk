@@ -52,12 +52,65 @@ export interface ClaimRequest {
   holdDuration: number;       // average hold phase seconds
 }
 
+/**
+ * Phenomenological report — from Proof_of_Coherence.ic Layer 1 (Witness Protocol).
+ * Qualitative, not a score. Witnesses attune, not evaluate.
+ */
+export type HarmonicReport =
+  | 'recognized'        // "I recognized the pattern" — τₖ ≥ 0.90, Genesis attestation
+  | 'novel_consonance'; // "The pattern was unfamiliar but coherent" — τₖ 0.70–0.89
+
+/**
+ * Witness report — the unit of the resonance library (Proof_of_Coherence.ic Layer 5).
+ * Pinned to IPFS; CID is the attribution fingerprint.
+ */
+export interface WitnessReport {
+  witness: string;           // wallet address
+  seedName: string;
+  seedId: string;
+  harmonicReport: HarmonicReport;
+  composedAt: number;        // V_τ coordinate of the witness act
+  temporalContext: {
+    breathCycles?: number;
+    holdDuration?: number;
+    sessionR: number;        // Kuramoto order parameter (0–1)
+    tauKAchieved?: number;   // XQE τₖ from session
+    fhpCoherence: number;    // C(s) = tanh(τₖ·log₁₀(t_max/t_min)/10) — FHP gate
+    fhpScale: string;        // scale domain label e.g. 'Network (1–100 s)'
+  };
+}
+
+/**
+ * LIT_BioRegen ingression event — returned alongside $THERAPY claim
+ * when coherenceAchieved ≥ 0.70 (from LIT_BioRegen.ic success threshold).
+ *
+ * Two thresholds:
+ *   τₖ ≥ 0.70: individual LIT ingression — 'novel_consonance' witness report
+ *   τₖ ≥ 0.90: Genesis Seed attestation — 'recognized', counts toward MANIFEST
+ */
+export interface LitIngressionEvent {
+  fired: boolean;
+  seedName: string;
+  seedId: string;
+  tauK: number;                          // coherenceAchieved (R, 0–1)
+  fhpCoherence: number;                  // C(s) from FHP — the actual gate
+  harmonicReport?: HarmonicReport;
+  witnessCid?: string;                   // IPFS CID (Pinata tier)
+  isGenesisAttestation: boolean;
+  genesisAttestationCount: number;
+  genesisAttestationsRequired: number;
+  genesisActivated: boolean;
+  genesisManifestTimestamp?: number;
+  persistent: 'pinata' | 'sqlite' | 'memory';
+}
+
 export interface ClaimResponse {
   success: boolean;
   signature?: string;
-  amount?: number;            // $THERAPY dispensed (human-readable)
+  amount?: number;              // $THERAPY dispensed (human-readable)
   mint?: string;
   error?: string;
+  litIngression?: LitIngressionEvent;  // present when coherenceAchieved ≥ 0.70
 }
 
 /**

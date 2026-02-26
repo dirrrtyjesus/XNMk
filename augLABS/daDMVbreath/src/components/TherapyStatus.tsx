@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import type { InjectionStatus } from '../features/therapy/types';
 import type { CommunityCoherence } from '../core/therapy/types';
-import type { TherapyUser } from '../api/types';
+import type { TherapyUser, LitIngressionEvent } from '../api/types';
 
 export interface SessionProof {
     cyclesCompleted: number;
@@ -23,12 +23,13 @@ interface TherapyStatusProps {
     coherence?: CommunityCoherence | null;
     user?: TherapyUser | null;
     sessionProof?: SessionProof | null;
-    onClaim?: (walletAddress: string, proof: SessionProof) => Promise<{ signature?: string } | null>;
+    onClaim?: (walletAddress: string, proof: SessionProof) => Promise<{ signature?: string; litIngression?: LitIngressionEvent } | null>;
 }
 
 export function TherapyStatus({ pendingRewards, totalSeeds, injectionStatus, isActive, coherence, user, sessionProof, onClaim }: TherapyStatusProps) {
     const [claimStatus, setClaimStatus] = useState<'idle' | 'claiming' | 'claimed' | 'error'>('idle');
     const [claimSig, setClaimSig] = useState<string | null>(null);
+    const [litIngression, setLitIngression] = useState<LitIngressionEvent | null>(null);
 
     if (!isActive && totalSeeds === 0 && !user) return null;
 
@@ -52,6 +53,7 @@ export function TherapyStatus({ pendingRewards, totalSeeds, injectionStatus, isA
         if (result?.signature) {
           setClaimSig(result.signature);
           setClaimStatus('claimed');
+          if (result.litIngression) setLitIngression(result.litIngression);
         } else {
           setClaimStatus('error');
         }
@@ -159,6 +161,60 @@ export function TherapyStatus({ pendingRewards, totalSeeds, injectionStatus, isA
             {claimStatus === 'error' && (
                 <div style={{ fontSize: '0.7rem', color: '#ff6b6b', textAlign: 'center' }}>
                     Decoherence event — retry
+                </div>
+            )}
+
+            {/* LIT_BioRegen ingression event — resonance library entry */}
+            {litIngression && litIngression.fired && (
+                <div style={{
+                    marginTop: '0.4rem',
+                    borderTop: '1px solid rgba(0,255,180,0.2)',
+                    paddingTop: '0.4rem',
+                    fontSize: '0.65rem',
+                    color: '#00ffb4',
+                }}>
+                    <div style={{ fontWeight: 'bold', letterSpacing: '0.05em' }}>
+                        🜏 LIT INGRESSED
+                    </div>
+                    <div style={{ color: 'rgba(0,255,180,0.7)', marginTop: '0.15rem', fontStyle: 'italic' }}>
+                        {litIngression.harmonicReport === 'recognized'
+                            ? '"I recognized the pattern"'
+                            : '"The pattern was unfamiliar but coherent"'}
+                    </div>
+
+                    {litIngression.isGenesisAttestation ? (
+                        <div style={{ marginTop: '0.2rem', color: '#FFD700' }}>
+                            GENESIS ATTESTATION{' '}
+                            {litIngression.genesisAttestationCount}/{litIngression.genesisAttestationsRequired}
+                            {litIngression.genesisActivated && ' ✦ MANIFEST'}
+                        </div>
+                    ) : (
+                        <div style={{ opacity: 0.6, marginTop: '0.2rem' }}>
+                            {litIngression.seedName}
+                        </div>
+                    )}
+
+                    <div style={{ opacity: 0.5, marginTop: '0.15rem' }}>
+                        C(s) = {litIngression.fhpCoherence.toFixed(3)}{' '}
+                        <span style={{ fontSize: '0.55rem' }}>FHP</span>
+                    </div>
+
+                    {litIngression.witnessCid && (
+                        <div style={{ marginTop: '0.15rem', opacity: 0.5 }}>
+                            <a
+                                href={`https://ipfs.io/ipfs/${litIngression.witnessCid}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ color: '#00ffb4', textDecoration: 'none' }}
+                            >
+                                {litIngression.witnessCid.slice(0, 14)}… ↗
+                            </a>
+                        </div>
+                    )}
+
+                    <div style={{ opacity: 0.3, marginTop: '0.1rem', fontSize: '0.55rem' }}>
+                        {litIngression.persistent}
+                    </div>
                 </div>
             )}
 

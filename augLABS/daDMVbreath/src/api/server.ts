@@ -10,6 +10,7 @@ import cors from 'cors';
 import { createTeleRatchet, type TeleRatchet } from '../core/therapy';
 import { PHI } from '../core/xqe/types';
 import { dispenseTherapy, getTreasuryStatus } from '../services/therapy-mint';
+import { recordLitIngression, getLitBioRegenStatus } from '../services/lit-bioregen-bridge';
 import type {
   TherapyUser,
   BreathSession,
@@ -310,6 +311,20 @@ export function createApiServer(manifold: string = 'Lehigh_Valley_Manifold') {
         user.lastBreathSession = Date.now();
       }
 
+      // LIT_BioRegen bridge — record ingression if coherence threshold met
+      const litIngression = await recordLitIngression(walletAddress, r, {
+        breathCycles: cyclesCompleted,
+        holdDuration: holdDuration ?? 15,
+        tauKAchieved: tauKAchieved ?? undefined,
+      });
+      if (litIngression.fired) {
+        console.log(
+          `🜏 LIT_BioRegen ingression: τₖ=${litIngression.tauK.toFixed(3)} | ` +
+          `${litIngression.isGenesisAttestation ? `GENESIS ATTESTATION ${litIngression.genesisAttestationCount}/${litIngression.genesisAttestationsRequired}` : 'ingression'} | ` +
+          `${walletAddress.slice(0, 8)}...`
+        );
+      }
+
       console.log(`🜏 $THERAPY dispensed: ${result.amount} → ${walletAddress.slice(0, 8)}... | sig: ${result.signature.slice(0, 16)}...`);
 
       const response: ClaimResponse = {
@@ -317,6 +332,7 @@ export function createApiServer(manifold: string = 'Lehigh_Valley_Manifold') {
         signature: result.signature,
         amount: result.amount,
         mint: result.mint,
+        litIngression: litIngression.fired ? litIngression : undefined,
       };
       res.json(response);
     } catch (error) {
@@ -367,7 +383,7 @@ export function createApiServer(manifold: string = 'Lehigh_Valley_Manifold') {
   /**
    * Get global stats
    */
-  app.get('/api/stats', (req, res) => {
+  app.get('/api/stats', async (req, res) => {
     const allSessions = Array.from(sessions.values());
     const completedSessions = allSessions.filter(s => s.completedAt);
     const totalCycles = completedSessions.reduce((sum, s) => sum + s.cyclesCompleted, 0);
@@ -381,6 +397,7 @@ export function createApiServer(manifold: string = 'Lehigh_Valley_Manifold') {
       totalCycles,
       totalRewards: Math.round(totalRewards * 100) / 100,
       coherence: ratchet.getCoherence('global'),
+      litBioRegen: await getLitBioRegenStatus(),
     });
   });
 
